@@ -1,0 +1,34 @@
+body {
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+#world {
+    position: relative;
+    display: flex;
+    border: 1px solid white;
+}
+
+#world .tile-grid {
+    position: absolute;
+}
+
+#world .body {
+    position: absolute;
+    background: white;
+    opacity: 0.8;
+    border: 1px solid white;
+}
+
+#world .body#player {
+    background: red;
+    border: 1px solid red;
+}
+
+#world .body.circle {
+    border-radius: 50%;
+}
