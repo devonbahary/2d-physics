@@ -16,7 +16,7 @@ module.exports = {
         sourceType: 'module',
         tsconfigRootDir: __dirname,
         project: ['./tsconfig.json'],
-    },   
+    },
     plugins: ['@typescript-eslint'],
     rules: {
         '@typescript-eslint/explicit-function-return-type': 'error',
