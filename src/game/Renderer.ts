@@ -4,6 +4,7 @@ import './styles.css';
 import { Sprite } from './Sprite';
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { RectBody } from 'src/physics/bodies/RectBody';
+import { scaleToGameLength } from './utilities';
 
 type Body = CircleBody | RectBody;
 
@@ -48,8 +49,8 @@ export class Renderer {
     private initWorldElement(): void {
         this.worldElement = document.createElement('div');
         this.worldElement.id = 'world';
-        this.worldElement.style.width = `${this.world.tilesWidth * 24}px`;
-        this.worldElement.style.height = `${this.world.tilesHeight * 24}px`;
+        this.worldElement.style.width = `${this.world.width}px`;
+        this.worldElement.style.height = `${this.world.height}px`;
         document.body.appendChild(this.worldElement);
 
         this.initTileGrid();
@@ -60,7 +61,10 @@ export class Renderer {
         const thickness = '1px';
         const border = '1px dotted grey';
 
-        for (let i = 1; i < this.world.tilesWidth; i += 1) {
+        const tilesWidth = scaleToGameLength(this.world.width);
+        const tilesHeight = scaleToGameLength(this.world.height);
+
+        for (let i = 1; i < tilesWidth; i += 1) {
             const latitudinalLine = document.createElement('span');
             latitudinalLine.classList.add(className);
             latitudinalLine.style.left = `${i * 24}px`;
@@ -70,7 +74,7 @@ export class Renderer {
 
             this.worldElement.appendChild(latitudinalLine);
 
-            for (let i = 1; i < this.world.tilesHeight; i += 1) {
+            for (let i = 1; i < tilesHeight; i += 1) {
                 const longitudinalLine = document.createElement('span');
                 longitudinalLine.classList.add(className);
                 longitudinalLine.style.top = `${i * 24}px`;

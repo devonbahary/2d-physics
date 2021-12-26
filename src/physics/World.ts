@@ -3,7 +3,7 @@ import { Body } from './bodies/types';
 export class World {
     public bodies: Body[] = [];
 
-    constructor(public tilesWidth: number, public tilesHeight: number) {}
+    constructor(public width: number, public height: number) {}
 
     addBody(body: Body): void {
         this.bodies.push(body);
