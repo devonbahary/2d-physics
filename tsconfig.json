@@ -8,5 +8,8 @@
         "strictNullChecks": true,
         "baseUrl": "."
     },
-    "include": ["./src/**/*", "babel.config.js"]
+    "include": [
+        "./src/**/*", 
+        "./babel.config.js",
+    ]
 }
