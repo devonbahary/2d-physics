@@ -4,8 +4,10 @@ import { BaseBody } from './BaseBody';
 export class CircleBody extends BaseBody {
     protected shape: Circle;
 
-    constructor() {
-        super(new Circle());
+    constructor(
+        radius?: number
+    ) {
+        super(new Circle(radius));
     }
 
     get radius(): number {
