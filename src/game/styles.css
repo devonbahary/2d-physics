@@ -10,7 +10,6 @@ body {
 #world {
     position: relative;
     display: flex;
-    border: 1px solid white;
 }
 
 #world .tile-grid {
@@ -21,12 +20,10 @@ body {
     position: absolute;
     background: white;
     opacity: 0.8;
-    border: 1px solid white;
 }
 
 #world .body#player {
     background: red;
-    border: 1px solid red;
 }
 
 #world .body.circle {

@@ -72,7 +72,7 @@ export class Renderer {
                 left: `${scaleToPhysicsLength(i)}px`,
                 width: thickness,
                 height: this.worldElement.style.height,
-                borderRight: border,
+                borderLeft: border,
             });
 
             this.worldElement.appendChild(latitudinalLine);
@@ -85,7 +85,7 @@ export class Renderer {
                     top: `${i * 24}px`,
                     width: this.worldElement.style.width,
                     height: thickness,
-                    borderBottom: border,
+                    borderTop: border,
                 });
 
                 this.worldElement.appendChild(longitudinalLine);
