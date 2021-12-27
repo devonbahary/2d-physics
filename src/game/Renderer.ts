@@ -97,7 +97,7 @@ export class Renderer {
 
     private syncWorldBodies(): void {
         for (const body of this.world.bodies) {
-            if (this.sprites.some(sprite => sprite.body.id === body.id)) return;
+            if (this.sprites.some(sprite => sprite.body.id === body.id)) continue;
             
             this.addBody(body);
         }
