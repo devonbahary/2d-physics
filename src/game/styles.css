@@ -24,6 +24,7 @@ body {
 
 #world .body#player {
     background: red;
+    z-index: 1;
 }
 
 #world .body.circle {
