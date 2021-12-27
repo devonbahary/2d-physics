@@ -3,7 +3,7 @@ import { RectBody } from 'src/physics/bodies/RectBody';
 import { physicsPosToScreenPos } from './utilities';
 
 export class Sprite {
-    constructor(private body: RectBody | CircleBody, private element: HTMLElement) {}
+    constructor(public body: RectBody | CircleBody, private element: HTMLElement) {}
 
     update(): void {
         const { x: left, y: top } = physicsPosToScreenPos(this.body);

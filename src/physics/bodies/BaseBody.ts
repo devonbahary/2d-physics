@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import { Vector } from '../Vector';
 import { Circle } from './shapes/Circle';
 import { Rect } from './shapes/Rect';
@@ -5,6 +6,7 @@ import { Rect } from './shapes/Rect';
 export abstract class BaseBody {
     public mass = 1;
     public velocity = new Vector();
+    public id = uuid();
 
     constructor(protected shape: Circle | Rect) {}
 

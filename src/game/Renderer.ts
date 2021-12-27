@@ -41,6 +41,8 @@ export class Renderer {
     }
 
     public update(): void {
+        this.syncWorldBodies();
+        
         for (const sprite of this.sprites) {
             sprite.update();
         }
@@ -90,6 +92,14 @@ export class Renderer {
 
                 this.worldElement.appendChild(longitudinalLine);
             }
+        }
+    }
+
+    private syncWorldBodies(): void {
+        for (const body of this.world.bodies) {
+            if (this.sprites.some(sprite => sprite.body.id === body.id)) return;
+            
+            this.addBody(body);
         }
     }
 }
