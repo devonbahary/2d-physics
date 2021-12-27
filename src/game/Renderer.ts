@@ -1,10 +1,10 @@
 import { World } from 'src/physics/World';
-import 'normalize.css';
-import './styles.css';
 import { Sprite } from './Sprite';
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { RectBody } from 'src/physics/bodies/RectBody';
-import { scaleToGameLength } from './utilities';
+import { scaleToGameLength, scaleToPhysicsLength } from './utilities';
+import 'normalize.css';
+import './styles.css';
 
 type Body = CircleBody | RectBody;
 
@@ -67,20 +67,26 @@ export class Renderer {
         for (let i = 1; i < tilesWidth; i += 1) {
             const latitudinalLine = document.createElement('span');
             latitudinalLine.classList.add(className);
-            latitudinalLine.style.left = `${i * 24}px`;
-            latitudinalLine.style.width = thickness;
-            latitudinalLine.style.height = this.worldElement.style.height;
-            latitudinalLine.style.borderRight = border;
+            
+            Object.assign(latitudinalLine.style, {
+                left: `${scaleToPhysicsLength(i)}px`,
+                width: thickness,
+                height: this.worldElement.style.height,
+                borderRight: border,
+            });
 
             this.worldElement.appendChild(latitudinalLine);
 
             for (let i = 1; i < tilesHeight; i += 1) {
                 const longitudinalLine = document.createElement('span');
                 longitudinalLine.classList.add(className);
-                longitudinalLine.style.top = `${i * 24}px`;
-                longitudinalLine.style.width = this.worldElement.style.width;
-                longitudinalLine.style.height = thickness;
-                longitudinalLine.style.borderBottom = border;
+                
+                Object.assign(longitudinalLine.style, {
+                    top: `${i * 24}px`,
+                    width: this.worldElement.style.width,
+                    height: thickness,
+                    borderBottom: border,
+                });
 
                 this.worldElement.appendChild(longitudinalLine);
             }
