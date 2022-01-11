@@ -3,10 +3,13 @@ import { Vector } from '../Vector';
 import { Circle } from './shapes/Circle';
 import { Rect } from './shapes/Rect';
 
+const MIN_VELOCITY_MAG = 0.1;
+
 export abstract class BaseBody {
     public mass = 1;
     public velocity = new Vector();
     public id = uuid();
+    public name = '';
 
     constructor(protected shape: Circle | Rect) {}
 
@@ -58,10 +61,17 @@ export abstract class BaseBody {
         return Boolean(this.velocity.magnitude);
     }
 
-    update(): void {
-        if (!this.isMoving()) return;
+    applyFriction(): void {
+        const velocityMagAfterFriction = Vector.magnitude(this.velocity) * 0.8;
+        this.velocity =
+            velocityMagAfterFriction >= MIN_VELOCITY_MAG
+                ? Vector.rescale(this.velocity, velocityMagAfterFriction)
+                : new Vector();
+    }
 
-        const newPos = Vector.add(this.pos, this.velocity);
+    progressMovement(time = 1): void {
+        const movement = Vector.mult(this.velocity, time);
+        const newPos = Vector.add(this.pos, movement);
         this.moveTo(newPos);
     }
 }

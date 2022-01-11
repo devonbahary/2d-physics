@@ -24,6 +24,6 @@ export const physicsPosToScreenPos = (body: Body): Vector => {
     throw new Error(ErrorMessage.unexpectedBodyType);
 };
 
-export const scaleToGameLength = (physicsLength: number) => physicsLength / 24;
+export const scaleToGameLength = (physicsLength: number): number => physicsLength / 24;
 
-export const scaleToPhysicsLength = (gameLength: number) => gameLength * 24;
+export const scaleToPhysicsLength = (gameLength: number): number => gameLength * 24;

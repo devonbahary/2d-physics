@@ -42,7 +42,7 @@ export class Renderer {
 
     public update(): void {
         this.syncWorldBodies();
-        
+
         for (const sprite of this.sprites) {
             sprite.update();
         }
@@ -69,7 +69,7 @@ export class Renderer {
         for (let i = 1; i < tilesWidth; i += 1) {
             const latitudinalLine = document.createElement('span');
             latitudinalLine.classList.add(className);
-            
+
             Object.assign(latitudinalLine.style, {
                 left: `${scaleToPhysicsLength(i)}px`,
                 width: thickness,
@@ -82,7 +82,7 @@ export class Renderer {
             for (let i = 1; i < tilesHeight; i += 1) {
                 const longitudinalLine = document.createElement('span');
                 longitudinalLine.classList.add(className);
-                
+
                 Object.assign(longitudinalLine.style, {
                     top: `${i * 24}px`,
                     width: this.worldElement.style.width,
@@ -97,8 +97,8 @@ export class Renderer {
 
     private syncWorldBodies(): void {
         for (const body of this.world.bodies) {
-            if (this.sprites.some(sprite => sprite.body.id === body.id)) continue;
-            
+            if (this.sprites.some((sprite) => sprite.body.id === body.id)) continue;
+
             this.addBody(body);
         }
     }
