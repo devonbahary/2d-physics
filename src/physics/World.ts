@@ -73,7 +73,7 @@ export class World {
 
             const timeOfCollision = getTimeOfCollision(movingBody, collisionBody);
 
-            if (this.isCollisionThisTimeStep(timeOfCollision)) {
+            if (this.isCollisionInThisTimeStep(timeOfCollision)) {
                 const collisionEvent = {
                     collisionBody,
                     timeOfCollision,
@@ -87,7 +87,7 @@ export class World {
         return collisions.sort((a, b) => a.timeOfCollision - b.timeOfCollision);
     }
 
-    private isCollisionThisTimeStep(timeOfCollision: number | null): timeOfCollision is number {
+    private isCollisionInThisTimeStep(timeOfCollision: number | null): timeOfCollision is number {
         if (timeOfCollision === null) return false; // collision never happens
         return timeOfCollision >= 0 && timeOfCollision <= 1;
     }
