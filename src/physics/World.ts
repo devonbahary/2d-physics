@@ -89,7 +89,7 @@ export class World {
 
     private isCollisionInThisTimeStep(timeOfCollision: number | null): timeOfCollision is number {
         if (timeOfCollision === null) return false; // collision never happens
-        return timeOfCollision >= 0 && timeOfCollision <= 1;
+        return roundForFloatingPoint(timeOfCollision) >= 0 && timeOfCollision <= 1;
     }
 
     private initBoundaries(): void {

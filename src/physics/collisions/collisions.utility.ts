@@ -17,7 +17,7 @@ const getClosestTimeOfCollision = (roots: number[]): number | null => {
 
         if (roundedRoot < 0) return acc;
 
-        if (acc === null || roundedRoot < acc) {
+        if (acc === null || root < acc) {
             return root;
         }
 
