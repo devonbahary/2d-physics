@@ -63,7 +63,9 @@ export const getFixedCollisionFinalVelocity = (movingBody: Body, collisionBody: 
     if (movingBody instanceof CircleBody) {
         if (collisionBody instanceof CircleBody) {
             const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
-            return Vector.rescale(diffPos, Vector.magnitude(movingBody.velocity));
+            const redirectedVector = Vector.rescale(diffPos, Vector.magnitude(movingBody.velocity));
+            const cor = getCoefficientOfRestitution(movingBody, collisionBody);
+            return adjustForElasticity(redirectedVector, cor);
         }
     }
     throw new Error(ErrorMessage.unexpectedBodyType);
@@ -73,10 +75,25 @@ export const getCollisionFinalVelocities = (movingBody: Body, collisionBody: Bod
     if (movingBody instanceof CircleBody) {
         if (collisionBody instanceof CircleBody) {
             const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
-            return getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
+            const [ finalVelocityA, finalVelocityB ] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
+            
+            const cor = getCoefficientOfRestitution(movingBody, collisionBody);
+            
+            return [
+                adjustForElasticity(finalVelocityA, cor),
+                adjustForElasticity(finalVelocityB, cor),
+            ];
         }
     }
     throw new Error(ErrorMessage.unexpectedBodyType);
+};
+
+const adjustForElasticity = (vector: Vector, coefficientOfRestitution: number): Vector => {
+    return Vector.rescale(vector, Vector.magnitude(vector) * coefficientOfRestitution);
+}
+
+const getCoefficientOfRestitution = (bodyA: Body, bodyB: Body): number => {
+    return Math.min(bodyA.elasticity, bodyB.elasticity);
 };
 
 const getElasticCollisionFinalVelocities = (bodyA: Body, bodyB: Body, diffPos: Vector): [Vector, Vector] => {

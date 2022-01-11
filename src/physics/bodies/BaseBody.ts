@@ -9,6 +9,7 @@ export abstract class BaseBody {
     public mass = 1;
     public id = uuid();
     public name = '';
+    public elasticity = 0.5; // 0 - 1
     private _velocity = new Vector();
     private _isFixed = false;
 
