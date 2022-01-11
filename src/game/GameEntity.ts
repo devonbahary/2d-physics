@@ -13,6 +13,7 @@ export class GameEntity {
     }
 
     move(dir: Vector): void {
-        this.body.velocity = Vector.rescale(dir, this.speed);
+        const movement = Vector.rescale(dir, this.speed);
+        this.body.setVelocity(movement);
     }
 }

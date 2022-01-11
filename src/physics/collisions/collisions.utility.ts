@@ -54,23 +54,32 @@ export const isBodyMovingTowardsBody = (movingBody: Body, collisionBody: Body): 
             const dot = Vector.dot(movingBody.velocity, diffPos);
             return roundForFloatingPoint(dot) > 0;
         }
-        throw new Error(`have not implemented circle vs rect collisions yet`);
     }
 
-    throw new Error(`have not implemented rectangle vs any collisons yet`);
+    throw new Error(ErrorMessage.unexpectedBodyType);
 };
 
-export const getFinalCollisionVelocities = (bodyA: Body, bodyB: Body): [Vector, Vector] => {
-    if (bodyA instanceof CircleBody) {
-        if (bodyB instanceof CircleBody) {
-            const diffPos = Vector.subtract(bodyA.pos, bodyB.pos);
-            return getCollisionFinalVelocities(bodyA, bodyB, diffPos);
+export const getFixedCollisionFinalVelocity = (movingBody: Body, collisionBody: Body): Vector => {
+    if (movingBody instanceof CircleBody) {
+        if (collisionBody instanceof CircleBody) {
+            const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
+            return Vector.rescale(diffPos, Vector.magnitude(movingBody.velocity));
         }
     }
-    throw new Error(`can't resolve collision`);
+    throw new Error(ErrorMessage.unexpectedBodyType);
 };
 
-const getCollisionFinalVelocities = (bodyA: Body, bodyB: Body, diffPos: Vector): [Vector, Vector] => {
+export const getCollisionFinalVelocities = (movingBody: Body, collisionBody: Body): [Vector, Vector] => {
+    if (movingBody instanceof CircleBody) {
+        if (collisionBody instanceof CircleBody) {
+            const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
+            return getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
+        }
+    }
+    throw new Error(ErrorMessage.unexpectedBodyType);
+};
+
+const getElasticCollisionFinalVelocities = (bodyA: Body, bodyB: Body, diffPos: Vector): [Vector, Vector] => {
     const { mass: mA, velocity: vA } = bodyA;
     const { mass: mB, velocity: vB } = bodyB;
 

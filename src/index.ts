@@ -26,6 +26,7 @@ const character = new GameEntity();
 character.body.name = 'character';
 
 character.moveTo(new Vector(3, 3));
+character.body.setFixed(true);
 
 world.addBody(player.body);
 world.addBody(character.body);

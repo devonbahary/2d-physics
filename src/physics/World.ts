@@ -1,10 +1,12 @@
 import { RectBody } from './bodies/RectBody';
 import { Body } from './bodies/types';
 import {
-    getFinalCollisionVelocities,
+    getCollisionFinalVelocities,
+    getFixedCollisionFinalVelocity,
     getTimeOfCollision,
     isBodyMovingTowardsBody,
 } from './collisions/collisions.utility';
+import { roundForFloatingPoint } from './math/math.utilities';
 import { Vector } from './Vector';
 
 type PotentialCollision = {
@@ -54,9 +56,14 @@ export class World {
                 }
 
                 // resolve collision and end movement
-                const [movingBodyFinalVel, collisionBodyFinalVel] = getFinalCollisionVelocities(body, collisionBody);
-                body.velocity = movingBodyFinalVel;
-                collisionBody.velocity = collisionBodyFinalVel;
+                if (collisionBody.isFixed) {
+                    const finalVelocity = getFixedCollisionFinalVelocity(body, collisionBody);
+                    body.setVelocity(finalVelocity);
+                } else {
+                    const [finalVelocityA, finalVelocityB] = getCollisionFinalVelocities(body, collisionBody);
+                    body.setVelocity(finalVelocityA);
+                    collisionBody.setVelocity(finalVelocityB);
+                }
 
                 return;
             }
