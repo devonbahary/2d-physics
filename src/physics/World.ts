@@ -1,11 +1,10 @@
 import { RectBody } from './bodies/RectBody';
 import { Body } from './bodies/types';
+import { getCollisionFinalVelocities, getFixedCollisionFinalVelocity } from './collisions/collision-resolver.utility';
 import {
-    getCollisionFinalVelocities,
-    getFixedCollisionFinalVelocity,
     getTimeOfCollision,
     isBodyMovingTowardsBody,
-} from './collisions/collisions.utility';
+} from './collisions/collision-detection.utility';
 import { roundForFloatingPoint } from './math/math.utilities';
 import { Vector } from './Vector';
 
