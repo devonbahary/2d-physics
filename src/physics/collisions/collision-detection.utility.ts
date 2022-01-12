@@ -35,7 +35,7 @@ export const getCollisionEvent = (movingBody: Body, worldBodies: Body[]): Collis
                         timeOfCollision,
                     };
                 }
-                
+
                 return acc;
             } else if (collisionBody instanceof RectBody) {
                 // if a collision occurs with a circle side, then we don't need to check for corners
@@ -104,8 +104,7 @@ const getCircleVsRectSideCollision = (circle: CircleBody, rect: RectBody): Circl
             if (!shouldConsiderTimeOfCollision(timeOfCollision, acc?.timeOfCollision)) return acc;
 
             const otherAxisAtTimeOfCollision =
-                (isXAlignedCollision ? circle.y : circle.x) +
-                    rateOfChangeInOtherAxis * timeOfCollision;
+                (isXAlignedCollision ? circle.y : circle.x) + rateOfChangeInOtherAxis * timeOfCollision;
 
             const rectOtherAxisLowerBoundary = isXAlignedCollision ? rect.y0 : rect.x0;
             const rectOtherAxisUpperBoundary = isXAlignedCollision ? rect.y1 : rect.x1;
@@ -228,10 +227,13 @@ const getTimeOfAxisAlignedCollision = (
     return (approachingBoundary - movingBoundary) / changeInAxis;
 };
 
-const shouldConsiderTimeOfCollision = (timeOfCollision: TimeOfCollision, existingTimeOfCollision?: number): timeOfCollision is number => {
+const shouldConsiderTimeOfCollision = (
+    timeOfCollision: TimeOfCollision,
+    existingTimeOfCollision?: number,
+): timeOfCollision is number => {
     if (!isWithinTimestep(timeOfCollision)) return false;
     return existingTimeOfCollision === undefined || existingTimeOfCollision > timeOfCollision;
-}
+};
 
 const isWithinTimestep = (timeOfCollision: TimeOfCollision): timeOfCollision is number => {
     if (timeOfCollision === null) return false;
@@ -240,10 +242,10 @@ const isWithinTimestep = (timeOfCollision: TimeOfCollision): timeOfCollision is 
 
 const willMovingBodyPenetrateCollisionBody = (movingBody: Body, point: Vector, timeOfCollision: number): boolean => {
     const currentPos = movingBody.pos;
-    
+
     movingBody.progressMovement(timeOfCollision);
     const willPenetrate = isBodyMovingTowardsPoint(movingBody, point);
-    
+
     movingBody.moveTo(currentPos);
 
     return willPenetrate;

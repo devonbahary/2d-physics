@@ -1,6 +1,9 @@
 import { RectBody } from './bodies/RectBody';
 import { Body } from './bodies/types';
-import { getCollisionFinalVelocities, getFixedCollisionRedirectedVelocity } from './collisions/collision-resolver.utility';
+import {
+    getCollisionFinalVelocities,
+    getFixedCollisionRedirectedVelocity,
+} from './collisions/collision-resolver.utility';
 import { getCollisionEvent } from './collisions/collision-detection.utility';
 import { Vector } from './Vector';
 

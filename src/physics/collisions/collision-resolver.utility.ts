@@ -7,14 +7,14 @@ import { CircleVsCircleCollisionEvent, CircleVsRectCollisionEvent, CollisionEven
 
 export const getFixedCollisionRedirectedVelocity = (collisionEvent: CollisionEvent): Vector => {
     const { movingBody, collisionBody } = collisionEvent;
-    
+
     if (isCircleVsCircleCollisionEvent(collisionEvent)) {
         const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
         const redirectedVector = Vector.rescale(diffPos, Vector.magnitude(movingBody.velocity));
         const cor = getCoefficientOfRestitution(movingBody, collisionBody);
         return adjustForElasticity(redirectedVector, cor);
     }
-    
+
     if (isCircleVsRectCollisionEvent(collisionEvent)) {
         const { pointOfContact } = collisionEvent;
         const diffPos = Vector.subtract(movingBody.pos, pointOfContact);
@@ -36,7 +36,7 @@ export const getCollisionFinalVelocities = (collisionEvent: CollisionEvent): [Ve
 
         return [adjustForElasticity(finalVelocityA, cor), adjustForElasticity(finalVelocityB, cor)];
     }
-    
+
     if (isCircleVsRectCollisionEvent(collisionEvent)) {
         const { pointOfContact } = collisionEvent;
 
