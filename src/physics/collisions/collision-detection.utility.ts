@@ -36,7 +36,7 @@ export const getCollisionEvent = (movingBody: Body, worldBodies: Body[]): Collis
 
                 movingBody.progressMovement(timeOfCollision);
 
-                if (isPointMovingTowardsPoint(movingBody, collisionBody)) {
+                if (isBodyMovingTowardsPoint(movingBody, collisionBody)) {
                     movingBody.moveTo(currentPos); // reset
 
                     return {
@@ -147,7 +147,7 @@ const getCircleVsRectSideCollision = (circle: CircleBody, rect: RectBody): Circl
                           y: collisionRectBoundary,
                       };
 
-                if (isPointMovingTowardsPoint(circle, pointOfContact)) {
+                if (isBodyMovingTowardsPoint(circle, pointOfContact)) {
                     circle.moveTo(currentPos);
 
                     return {
@@ -181,7 +181,7 @@ const getCircleVsRectCornerCollision = (circle: CircleBody, rect: RectBody): Cir
         const currentPos = circle.pos;
         circle.progressMovement(timeOfCollision);
 
-        if (isPointMovingTowardsPoint(circle, corner)) {
+        if (isBodyMovingTowardsPoint(circle, corner)) {
             circle.moveTo(currentPos);
 
             return {
@@ -267,7 +267,7 @@ const getTimeOfAxisAlignedCollision = (
     return (approachingBoundary - movingBoundary) / changeInAxis;
 };
 
-const isPointMovingTowardsPoint = (movingBody: Body, point: Vector): boolean => {
+const isBodyMovingTowardsPoint = (movingBody: Body, point: Vector): boolean => {
     const diffPos = Vector.subtract(point, movingBody.pos);
     const dot = Vector.dot(movingBody.velocity, diffPos);
     return roundForFloatingPoint(dot) > 0;
