@@ -19,7 +19,6 @@ body {
 #world .body {
     position: absolute;
     background: white;
-    opacity: 0.8;
 }
 
 #world .body#player {
@@ -29,4 +28,8 @@ body {
 
 #world .body.circle {
     border-radius: 50%;
+}
+
+#world .body.fixed {
+    opacity: 0.7;
 }

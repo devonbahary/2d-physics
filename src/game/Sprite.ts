@@ -13,5 +13,11 @@ export class Sprite {
 
         this.element.style.width = `${this.body.width}px`;
         this.element.style.height = `${this.body.height}px`;
+
+        if (this.body.isFixed) {
+            this.element.classList.add('fixed');
+        } else {
+            this.element.classList.remove('fixed');
+        }
     }
 }
