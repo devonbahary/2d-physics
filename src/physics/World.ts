@@ -2,16 +2,9 @@ import { RectBody } from './bodies/RectBody';
 import { Body } from './bodies/types';
 import { getCollisionFinalVelocities, getFixedCollisionFinalVelocity } from './collisions/collision-resolver.utility';
 import {
-    getTimeOfCollision,
-    isBodyMovingTowardsBody,
+    getCollisionEvent,
 } from './collisions/collision-detection.utility';
-import { roundForFloatingPoint } from './math/math.utilities';
 import { Vector } from './Vector';
-
-type PotentialCollision = {
-    collisionBody: Body;
-    timeOfCollision: number;
-};
 
 export class World {
     public bodies: Body[] = [];
@@ -37,65 +30,27 @@ export class World {
     private updateBody(body: Body): void {
         if (!body.isMoving()) return;
 
-        const potentialCollisions = this.getPotentialCollisionsInThisTimeStep(body);
+        const collisionEvent = getCollisionEvent(body, this.bodies);
 
-        if (potentialCollisions.length) {
-            const currentPos = new Vector(body.pos.x, body.pos.y);
+        if (collisionEvent) {
+            const { collisionBody, timeOfCollision } = collisionEvent;
 
-            for (const collision of potentialCollisions) {
-                const { collisionBody, timeOfCollision } = collision;
+            // move body to point of collision
+            body.progressMovement(timeOfCollision);
 
-                // move body to point of collision
-                body.progressMovement(timeOfCollision);
-
-                if (!isBodyMovingTowardsBody(body, collisionBody)) {
-                    // bodies touch but never intersect (graze), so reset position and consider next collision
-                    body.moveTo(currentPos);
-                    continue;
-                }
-
-                // resolve collision and end movement
-                if (collisionBody.isFixed) {
-                    const finalVelocity = getFixedCollisionFinalVelocity(body, collisionBody);
-                    body.setVelocity(finalVelocity);
-                } else {
-                    const [finalVelocityA, finalVelocityB] = getCollisionFinalVelocities(body, collisionBody);
-                    body.setVelocity(finalVelocityA);
-                    collisionBody.setVelocity(finalVelocityB);
-                }
-
-                return;
+            // resolve collision and end movement
+            if (collisionBody.isFixed) {
+                const finalVelocity = getFixedCollisionFinalVelocity(body, collisionBody);
+                body.setVelocity(finalVelocity);
+            } else {
+                const [finalVelocityA, finalVelocityB] = getCollisionFinalVelocities(body, collisionBody);
+                body.setVelocity(finalVelocityA);
+                collisionBody.setVelocity(finalVelocityB);
             }
+        } else {
+            body.progressMovement();
+            body.applyFriction();
         }
-
-        // no collisions, so move freely
-        body.progressMovement();
-        body.applyFriction();
-    }
-
-    private getPotentialCollisionsInThisTimeStep(movingBody: Body): PotentialCollision[] {
-        const collisions = this.bodies.reduce<PotentialCollision[]>((acc, collisionBody) => {
-            if (movingBody === collisionBody) return acc;
-
-            const timeOfCollision = getTimeOfCollision(movingBody, collisionBody);
-
-            if (this.isCollisionInThisTimeStep(timeOfCollision)) {
-                const collisionEvent = {
-                    collisionBody,
-                    timeOfCollision,
-                };
-                acc.push(collisionEvent);
-            }
-
-            return acc;
-        }, []);
-
-        return collisions.sort((a, b) => a.timeOfCollision - b.timeOfCollision);
-    }
-
-    private isCollisionInThisTimeStep(timeOfCollision: number | null): timeOfCollision is number {
-        if (timeOfCollision === null) return false; // collision never happens
-        return roundForFloatingPoint(timeOfCollision) >= 0 && timeOfCollision <= 1;
     }
 
     private initBoundaries(): void {

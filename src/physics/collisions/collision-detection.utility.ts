@@ -2,16 +2,67 @@ import { CircleBody } from '../bodies/CircleBody';
 import { RectBody } from '../bodies/RectBody';
 import { Body } from '../bodies/types';
 import { ErrorMessage } from '../constants';
-import { roundForFloatingPoint } from '../math/math.utilities';
+import { quadratic, roundForFloatingPoint } from '../math/math.utilities';
 import { Vector } from '../Vector';
+import { CollisionEvent } from './types';
 
-const quadratic = (a: number, b: number, c: number): number[] => {
-    const roots = [(-b + Math.sqrt(b ** 2 - 4 * a * c)) / (2 * a), (-b - Math.sqrt(b ** 2 - 4 * a * c)) / (2 * a)];
+type TimeOfCollision = number | null;
 
-    return roots.filter((r) => !isNaN(r));
+export const getCollisionEvent = (movingBody: Body, worldBodies: Body[]): CollisionEvent | null => {
+    return worldBodies.reduce<CollisionEvent | null>((acc, collisionBody) => {
+        if (movingBody === collisionBody) return acc;
+
+        if (movingBody instanceof CircleBody) {
+            if (collisionBody instanceof CircleBody) {
+                const timeOfCollision = getClosestCircleVsCircleCollision(movingBody, collisionBody);
+
+                if (!isWithinTimestep(timeOfCollision)) return acc;
+
+                // skip if already found sooner collision event
+                if (acc && acc.timeOfCollision < timeOfCollision) return acc;
+
+                // find out if collision at the point of impact will intersect the two bodies or is just a graze
+                const currentPos = movingBody.pos;
+                
+                movingBody.progressMovement(timeOfCollision);
+                const isGraze = !isBodyMovingTowardsBody(movingBody, collisionBody);
+
+                movingBody.moveTo(currentPos); // reset
+
+                if (isGraze) return acc; // graze is not a collision
+
+                return {
+                    collisionBody,
+                    timeOfCollision,
+                };
+            }
+        }
+
+        return acc;
+    }, null);
 };
 
-const getClosestTimeOfCollision = (roots: number[]): number | null => {
+const isWithinTimestep = (timeOfCollision: TimeOfCollision): timeOfCollision is number => {
+    if (timeOfCollision === null) return false;
+    return roundForFloatingPoint(timeOfCollision) >= 0 && timeOfCollision <= 1;
+}
+
+const getClosestCircleVsCircleCollision = (movingBody: CircleBody, collisionBody: CircleBody): TimeOfCollision => {
+    const { velocity } = movingBody;
+    
+    const diffX = movingBody.x - collisionBody.x;
+    const diffY = movingBody.y - collisionBody.y;
+
+    const a = velocity.x ** 2 + velocity.y ** 2;
+    const b = 2 * velocity.x * diffX + 2 * velocity.y * diffY;
+    const c = diffX ** 2 + diffY ** 2 - (movingBody.radius + collisionBody.radius) ** 2;
+
+    const roots = quadratic(a, b, c);
+    
+    return getClosestTimeOfCollision(roots);
+}
+
+const getClosestTimeOfCollision = (roots: number[]): TimeOfCollision => {
     return roots.reduce((acc, root) => {
         const roundedRoot = roundForFloatingPoint(root);
 
@@ -25,28 +76,7 @@ const getClosestTimeOfCollision = (roots: number[]): number | null => {
     }, null);
 };
 
-export const getTimeOfCollision = (bodyA: Body, bodyB: Body): number | null => {
-    if (bodyA instanceof CircleBody) {
-        if (bodyB instanceof CircleBody) {
-            const { velocity } = bodyA;
-
-            const diffX = bodyA.x - bodyB.x;
-            const diffY = bodyA.y - bodyB.y;
-
-            const a = velocity.x ** 2 + velocity.y ** 2;
-            const b = 2 * velocity.x * diffX + 2 * velocity.y * diffY;
-            const c = diffX ** 2 + diffY ** 2 - (bodyA.radius + bodyB.radius) ** 2;
-
-            const roots = quadratic(a, b, c);
-            return getClosestTimeOfCollision(roots);
-        }
-    }
-
-    return null;
-
-    throw new Error(ErrorMessage.unexpectedBodyType);
-};
-
+// TODO: should be point moving towards point? sometimes the body positioning is not relevant and the point of contact is
 export const isBodyMovingTowardsBody = (movingBody: Body, collisionBody: Body): boolean => {
     if (movingBody instanceof CircleBody) {
         if (collisionBody instanceof CircleBody) {
