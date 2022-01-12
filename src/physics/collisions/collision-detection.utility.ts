@@ -1,7 +1,6 @@
 import { CircleBody } from '../bodies/CircleBody';
 import { RectBody } from '../bodies/RectBody';
 import { Body } from '../bodies/types';
-import { ErrorMessage } from '../constants';
 import { quadratic, roundForFloatingPoint } from '../math/math.utilities';
 import { Vector } from '../Vector';
 import { CircleVsRectCollisionEvent, CollisionEvent } from './types';
@@ -258,7 +257,11 @@ const getRectCorners = (rect: RectBody): Vector[] => [
     new Vector(rect.x0, rect.y1), // bottom left
 ];
 
-const getTimeOfAxisAlignedCollision = (movingBoundary: number, approachingBoundary: number, changeInAxis: number) => {
+const getTimeOfAxisAlignedCollision = (
+    movingBoundary: number,
+    approachingBoundary: number,
+    changeInAxis: number,
+): TimeOfCollision => {
     if (changeInAxis === 0) return null;
 
     return (approachingBoundary - movingBoundary) / changeInAxis;
