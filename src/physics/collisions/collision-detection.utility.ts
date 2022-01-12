@@ -59,6 +59,7 @@ export const isBodyMovingTowardsBody = (movingBody: Body, collisionBody: Body): 
     throw new Error(ErrorMessage.unexpectedBodyType);
 };
 
+// TODO: will use this in the future
 export const areIntersecting = (bodyA: Body, bodyB: Body): boolean => {
     if (bodyA instanceof CircleBody) {
         if (bodyB instanceof CircleBody) {
