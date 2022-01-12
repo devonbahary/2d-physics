@@ -6,9 +6,7 @@ import { gamePosToPhysicsPos } from './utilities';
 export class GameEntity {
     public speed = 1;
 
-    constructor(
-        public body: Body = new CircleBody(),
-    ) {};
+    constructor(public body: Body = new CircleBody()) {}
 
     // translate game coordinates to physics coordinates
     moveTo(pos: Vector): void {

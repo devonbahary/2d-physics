@@ -1,9 +1,7 @@
 import { RectBody } from './bodies/RectBody';
 import { Body } from './bodies/types';
 import { getCollisionFinalVelocities, getFixedCollisionFinalVelocity } from './collisions/collision-resolver.utility';
-import {
-    getCollisionEvent,
-} from './collisions/collision-detection.utility';
+import { getCollisionEvent } from './collisions/collision-detection.utility';
 import { Vector } from './Vector';
 
 export class World {

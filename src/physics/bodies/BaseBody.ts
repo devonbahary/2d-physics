@@ -54,7 +54,7 @@ export abstract class BaseBody {
     get height(): number {
         return this.shape.height;
     }
-    
+
     get isFixed(): boolean {
         return this._isFixed;
     }
