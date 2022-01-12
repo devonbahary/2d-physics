@@ -2,12 +2,14 @@ import { CircleBody } from "../bodies/CircleBody";
 import { RectBody } from "../bodies/RectBody";
 import { Vector } from "../Vector";
 
-type CircleVsCircleCollisionEvent = {
+export type CircleVsCircleCollisionEvent = {
+    movingBody: CircleBody;
     collisionBody: CircleBody;
     timeOfCollision: number;
 }
 
-type CircleVsRectCollisionEvent = {
+export type CircleVsRectCollisionEvent = {
+    movingBody: CircleBody;
     collisionBody: RectBody;
     timeOfCollision: number;
     pointOfContact: Vector;

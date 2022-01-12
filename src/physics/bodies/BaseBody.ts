@@ -79,7 +79,7 @@ export abstract class BaseBody {
     }
 
     isMoving(): boolean {
-        return Boolean(this._velocity.magnitude);
+        return Boolean(Vector.magnitude(this._velocity));
     }
 
     applyFriction(): void {

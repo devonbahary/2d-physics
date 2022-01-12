@@ -4,6 +4,7 @@ import { Renderer } from './game/Renderer';
 import { GameEntity } from './game/GameEntity';
 import { Vector } from './physics/Vector';
 import { scaleToPhysicsLength } from './game/utilities';
+import { RectBody } from './physics/bodies/RectBody';
 
 const settings = {
     world: {
@@ -22,14 +23,21 @@ player.body.name = 'player';
 
 player.moveTo(new Vector(Math.floor(settings.world.tileWidth / 2), Math.floor(settings.world.tileHeight / 2)));
 
-const character = new GameEntity();
-character.body.name = 'character';
+const circle = new GameEntity();
+circle.body.name = 'circle';
 
-character.moveTo(new Vector(3, 3));
-character.body.setFixed(true);
+circle.moveTo(new Vector(3, 3));
+circle.body.setFixed(true);
+
+const rect = new GameEntity(new RectBody());
+rect.body.name = 'rect';
+
+rect.moveTo(new Vector(1, 3));
+rect.body.setFixed(true);
 
 world.addBody(player.body);
-world.addBody(character.body);
+world.addBody(circle.body);
+world.addBody(rect.body);
 
 const renderer = new Renderer(world, player.body);
 const controls = new Controls(player);

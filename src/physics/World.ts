@@ -40,10 +40,10 @@ export class World {
 
             // resolve collision and end movement
             if (collisionBody.isFixed) {
-                const finalVelocity = getFixedCollisionFinalVelocity(body, collisionBody);
+                const finalVelocity = getFixedCollisionFinalVelocity(collisionEvent);
                 body.setVelocity(finalVelocity);
             } else {
-                const [finalVelocityA, finalVelocityB] = getCollisionFinalVelocities(body, collisionBody);
+                const [finalVelocityA, finalVelocityB] = getCollisionFinalVelocities(collisionEvent);
                 body.setVelocity(finalVelocityA);
                 collisionBody.setVelocity(finalVelocityB);
             }
@@ -69,6 +69,7 @@ export class World {
         leftBoundary.moveTo(new Vector(0, height / 2));
 
         for (const boundary of [topBoundary, rightBoundary, bottomBoundary, leftBoundary]) {
+            boundary.setFixed(true);
             this.addBody(boundary);
         }
     }

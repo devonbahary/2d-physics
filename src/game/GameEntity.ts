@@ -1,10 +1,14 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
+import { Body } from 'src/physics/bodies/types';
 import { Vector } from 'src/physics/Vector';
 import { gamePosToPhysicsPos } from './utilities';
 
 export class GameEntity {
-    public body = new CircleBody();
     public speed = 1;
+
+    constructor(
+        public body: Body = new CircleBody(),
+    ) {};
 
     // translate game coordinates to physics coordinates
     moveTo(pos: Vector): void {
