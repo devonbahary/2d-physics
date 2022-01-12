@@ -5,14 +5,16 @@ import { Vector } from '../Vector';
 import { RectBody } from '../bodies/RectBody';
 import { CircleVsCircleCollisionEvent, CircleVsRectCollisionEvent, CollisionEvent } from './types';
 
-export const getFixedCollisionFinalVelocity = (collisionEvent: CollisionEvent): Vector => {
+export const getFixedCollisionRedirectedVelocity = (collisionEvent: CollisionEvent): Vector => {
     const { movingBody, collisionBody } = collisionEvent;
+    
     if (isCircleVsCircleCollisionEvent(collisionEvent)) {
         const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
         const redirectedVector = Vector.rescale(diffPos, Vector.magnitude(movingBody.velocity));
         const cor = getCoefficientOfRestitution(movingBody, collisionBody);
         return adjustForElasticity(redirectedVector, cor);
     }
+    
     if (isCircleVsRectCollisionEvent(collisionEvent)) {
         const { pointOfContact } = collisionEvent;
         const diffPos = Vector.subtract(movingBody.pos, pointOfContact);
@@ -20,6 +22,7 @@ export const getFixedCollisionFinalVelocity = (collisionEvent: CollisionEvent): 
         const cor = getCoefficientOfRestitution(movingBody, collisionBody);
         return adjustForElasticity(redirectedVector, cor);
     }
+
     throw new Error(ErrorMessage.unexpectedBodyType);
 };
 
@@ -33,6 +36,7 @@ export const getCollisionFinalVelocities = (collisionEvent: CollisionEvent): [Ve
 
         return [adjustForElasticity(finalVelocityA, cor), adjustForElasticity(finalVelocityB, cor)];
     }
+    
     if (isCircleVsRectCollisionEvent(collisionEvent)) {
         const { pointOfContact } = collisionEvent;
 
