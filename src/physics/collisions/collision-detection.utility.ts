@@ -171,8 +171,6 @@ const getCircleVsRectCornerCollision = (circle: CircleBody, rect: RectBody): Cir
     return getRectCorners(rect).reduce<CircleVsRectCollisionEvent | null>((acc, corner) => {
         const timeOfCollision = getCircleVsRectCornerTimeOfCollision(circle, corner);
 
-        if (timeOfCollision === null) return acc;
-
         if (!isWithinTimestep(timeOfCollision)) return acc;
 
         // skip if already found sooner collision event
