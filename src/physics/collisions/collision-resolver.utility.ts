@@ -17,8 +17,7 @@ export const getFixedCollisionRedirectedVelocity = (collisionEvent: CollisionEve
 
     if (isCircleVsRectCollisionEvent(collisionEvent)) {
         const { pointOfContact } = collisionEvent;
-        const diffPos = Vector.subtract(movingBody.pos, pointOfContact);
-        const redirectedVector = Vector.rescale(diffPos, Vector.magnitude(movingBody.velocity));
+        const redirectedVector = getBounceVectorOffFixedPoint(movingBody, pointOfContact);
         const cor = getCoefficientOfRestitution(movingBody, collisionBody);
         return adjustForElasticity(redirectedVector, cor);
     }
@@ -52,6 +51,17 @@ export const getCollisionFinalVelocities = (collisionEvent: CollisionEvent): [Ve
     }
 
     throw new Error(ErrorMessage.unexpectedBodyType);
+};
+
+// https://www.youtube.com/watch?v=naaeH1qbjdQ
+const getBounceVectorOffFixedPoint = (movingBody: Body, point: Vector): Vector => {
+    const { velocity } = movingBody;
+    const diffPos = Vector.subtract(movingBody.pos, point);
+    // <point of intersection> + v - 2 proj n (v)
+    const tangentOfContact = Vector.normal(diffPos);
+    const normalOfContact = Vector.normal(tangentOfContact);
+    const proj = Vector.proj(velocity, normalOfContact);
+    return Vector.subtract(velocity, Vector.mult(proj, 2));
 };
 
 const adjustForElasticity = (vector: Vector, coefficientOfRestitution: number): Vector => {

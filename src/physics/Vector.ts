@@ -31,6 +31,14 @@ export class Vector {
         return Vector.mult(normalized, mag);
     }
 
+    static normal(v: Vector): Vector {
+        return new Vector(-v.y, v.x);
+    }
+
+    static proj(v: Vector, onto: Vector): Vector {
+        return Vector.mult(onto, Vector.dot(v, onto) / Vector.dot(onto, onto));
+    }
+
     static roundForFloatingPoint(v: Vector): Vector {
         return new Vector(roundForFloatingPoint(v.x), roundForFloatingPoint(v.y));
     }
