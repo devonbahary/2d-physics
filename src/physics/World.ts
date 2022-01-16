@@ -58,16 +58,16 @@ export class World {
         const { width, height } = this;
 
         const topBoundary = new RectBody(width, 1);
-        topBoundary.moveTo(new Vector(width / 2, 0));
+        topBoundary.moveTo(new Vector(width / 2, -1));
 
         const rightBoundary = new RectBody(1, height);
-        rightBoundary.moveTo(new Vector(width, height / 2));
+        rightBoundary.moveTo(new Vector(width + 1, height / 2));
 
         const bottomBoundary = new RectBody(width, 1);
-        bottomBoundary.moveTo(new Vector(bottomBoundary.width / 2, height));
+        bottomBoundary.moveTo(new Vector(bottomBoundary.width / 2, height + 1));
 
         const leftBoundary = new RectBody(1, height);
-        leftBoundary.moveTo(new Vector(0, height / 2));
+        leftBoundary.moveTo(new Vector(-1, height / 2));
 
         for (const boundary of [topBoundary, rightBoundary, bottomBoundary, leftBoundary]) {
             boundary.setFixed(true);
