@@ -4,7 +4,6 @@ import { Renderer } from './game/Renderer';
 import { GameEntity } from './game/GameEntity';
 import { Vector } from './physics/Vector';
 import { scaleToPhysicsLength } from './game/utilities';
-import { RectBody } from './physics/bodies/RectBody';
 import { setupEnvironmentA } from './game/environments/environmentA';
 
 const settings = {

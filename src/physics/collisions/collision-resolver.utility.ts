@@ -113,7 +113,9 @@ export const isCircleVsCircleCollisionEvent = (
     return movingBody instanceof CircleBody && collisionBody instanceof CircleBody;
 };
 
-export const isCircleVsRectCollisionEvent = (collisionEvent: CollisionEvent): collisionEvent is CircleVsRectCollisionEvent => {
+export const isCircleVsRectCollisionEvent = (
+    collisionEvent: CollisionEvent,
+): collisionEvent is CircleVsRectCollisionEvent => {
     const { movingBody, collisionBody } = collisionEvent;
     return movingBody instanceof CircleBody && collisionBody instanceof RectBody;
 };

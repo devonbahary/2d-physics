@@ -1,7 +1,10 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { Body } from 'src/physics/bodies/types';
 import { getCollisionEvent } from 'src/physics/collisions/collision-detection.utility';
-import { isCircleVsCircleCollisionEvent, isCircleVsRectCollisionEvent } from 'src/physics/collisions/collision-resolver.utility';
+import {
+    isCircleVsCircleCollisionEvent,
+    isCircleVsRectCollisionEvent,
+} from 'src/physics/collisions/collision-resolver.utility';
 import { CollisionEvent } from 'src/physics/collisions/types';
 import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
@@ -10,10 +13,7 @@ import { gamePosToPhysicsPos } from './utilities';
 export class GameEntity {
     public speed = 1;
 
-    constructor(
-        private world: World,
-        public body: Body = new CircleBody(),
-    ) {}
+    constructor(private world: World, public body: Body = new CircleBody()) {}
 
     // translate game coordinates to physics coordinates
     moveTo(pos: Vector): void {
@@ -36,16 +36,16 @@ export class GameEntity {
             this.body.progressMovement(timeOfCollision);
             const diffPos = Vector.subtract(collisionBody.pos, this.body.pos);
             const tangentOfContact = Vector.normal(diffPos);
-                
+
             const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
             this.body.setVelocity(slideVector);
         } else if (isCircleVsRectCollisionEvent(collisionEvent)) {
-            const { collisionBody, timeOfCollision, pointOfContact } = collisionEvent;
+            const { timeOfCollision, pointOfContact } = collisionEvent;
 
             this.body.progressMovement(timeOfCollision);
             const diffPos = Vector.subtract(pointOfContact, this.body.pos);
             const tangentOfContact = Vector.normal(diffPos);
-                
+
             const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
             this.body.setVelocity(slideVector);
         }

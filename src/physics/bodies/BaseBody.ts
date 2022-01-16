@@ -86,7 +86,7 @@ export abstract class BaseBody {
         // slow down body until a minimum stopping speed is reached
         const magAfterFriction = Vector.magnitude(this._velocity) * 0.8;
         const finalMag = magAfterFriction < MIN_VELOCITY_MAG ? 0 : magAfterFriction;
-        
+
         this._velocity = Vector.rescale(this._velocity, finalMag);
     }
 
