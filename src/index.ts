@@ -19,7 +19,7 @@ const world = new World(
     scaleToPhysicsLength(settings.world.tileHeight),
 );
 
-const player = new GameEntity();
+const player = new GameEntity(world);
 player.body.name = 'player';
 
 player.moveTo(new Vector(Math.floor(settings.world.tileWidth / 2), Math.floor(settings.world.tileHeight / 2)));

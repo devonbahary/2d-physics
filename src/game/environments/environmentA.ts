@@ -4,17 +4,25 @@ import { World } from "src/physics/World";
 import { GameEntity } from "../GameEntity";
 
 export const setupEnvironmentA = (world: World) => {
-    const circle = new GameEntity();
+    const circle = new GameEntity(world);
     circle.body.name = 'circle';
+    circle.body.setFixed(true);
 
-    const fixedCircle = new GameEntity();
+    const fixedCircle = new GameEntity(world);
     fixedCircle.body.name = 'fixed-circle';
     fixedCircle.body.setFixed(true);
     
-    const rect = new GameEntity(new RectBody());
+    const rect = new GameEntity(
+        world, 
+        new RectBody(),
+    );
     rect.body.name = 'rect';
+    rect.body.setFixed(true);
 
-    const fixedRect = new GameEntity(new RectBody());
+    const fixedRect = new GameEntity(
+        world, 
+        new RectBody(),
+    );
     fixedRect.body.name = 'fixed-rect';
     fixedRect.body.setFixed(true);
     

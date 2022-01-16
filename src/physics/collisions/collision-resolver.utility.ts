@@ -106,14 +106,14 @@ const getElasticCollisionFinalVelocities = (bodyA: Body, bodyB: Body, diffPos: V
     return [Vector.roundForFloatingPoint(finalVelocityA), Vector.roundForFloatingPoint(finalVelocityB)];
 };
 
-const isCircleVsCircleCollisionEvent = (
+export const isCircleVsCircleCollisionEvent = (
     collisionEvent: CollisionEvent,
 ): collisionEvent is CircleVsCircleCollisionEvent => {
     const { movingBody, collisionBody } = collisionEvent;
     return movingBody instanceof CircleBody && collisionBody instanceof CircleBody;
 };
 
-const isCircleVsRectCollisionEvent = (collisionEvent: CollisionEvent): collisionEvent is CircleVsRectCollisionEvent => {
+export const isCircleVsRectCollisionEvent = (collisionEvent: CollisionEvent): collisionEvent is CircleVsRectCollisionEvent => {
     const { movingBody, collisionBody } = collisionEvent;
     return movingBody instanceof CircleBody && collisionBody instanceof RectBody;
 };
