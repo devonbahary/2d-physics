@@ -6,6 +6,7 @@ import {
     isCircleVsRectCollisionEvent,
 } from 'src/physics/collisions/collision-resolver.utility';
 import { CollisionEvent } from 'src/physics/collisions/types';
+import { ErrorMessage } from 'src/physics/constants';
 import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
 import { gamePosToPhysicsPos } from './utilities';
@@ -49,5 +50,7 @@ export class GameEntity {
             const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
             this.body.setVelocity(slideVector);
         }
+
+        throw new Error(ErrorMessage.unexpectedBodyType);
     }
 }
