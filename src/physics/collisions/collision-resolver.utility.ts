@@ -64,14 +64,6 @@ const getBounceVectorOffFixedPoint = (movingBody: Body, point: Vector): Vector =
     return Vector.subtract(velocity, Vector.mult(proj, 2));
 };
 
-const adjustForElasticity = (vector: Vector, coefficientOfRestitution: number): Vector => {
-    return Vector.rescale(vector, Vector.magnitude(vector) * coefficientOfRestitution);
-};
-
-const getCoefficientOfRestitution = (bodyA: Body, bodyB: Body): number => {
-    return Math.min(bodyA.elasticity, bodyB.elasticity);
-};
-
 const getElasticCollisionFinalVelocities = (bodyA: Body, bodyB: Body, diffPos: Vector): [Vector, Vector] => {
     const { mass: mA, velocity: vA } = bodyA;
     const { mass: mB, velocity: vB } = bodyB;
@@ -118,4 +110,12 @@ export const isCircleVsRectCollisionEvent = (
 ): collisionEvent is CircleVsRectCollisionEvent => {
     const { movingBody, collisionBody } = collisionEvent;
     return movingBody instanceof CircleBody && collisionBody instanceof RectBody;
+};
+
+const adjustForElasticity = (vector: Vector, coefficientOfRestitution: number): Vector => {
+    return Vector.rescale(vector, Vector.magnitude(vector) * coefficientOfRestitution);
+};
+
+const getCoefficientOfRestitution = (bodyA: Body, bodyB: Body): number => {
+    return Math.min(bodyA.elasticity, bodyB.elasticity);
 };
