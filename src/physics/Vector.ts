@@ -27,6 +27,7 @@ export class Vector {
 
     static rescale(v: Vector, mag: number): Vector {
         const originalMag = Vector.magnitude(v);
+        if (originalMag === 0) return v;
         const normalized = Vector.divide(v, originalMag);
         return Vector.mult(normalized, mag);
     }
