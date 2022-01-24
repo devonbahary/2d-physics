@@ -5,15 +5,30 @@ import { Rect } from './shapes/Rect';
 
 const MIN_VELOCITY_MAG = 0.1;
 
+export type BaseBodyArgs = {
+    elasticity?: number;
+    name?: string;
+    shape: Circle | Rect;
+};
+
 export abstract class BaseBody {
     public mass = 1;
     public id = uuid();
-    public name = '';
-    public elasticity = 0.5; // 0 - 1
+    public name: string;
+    public elasticity = 1; // 0 - 1
+    protected shape: Circle | Rect;
     private _velocity = new Vector();
     private _isFixed = false;
 
-    constructor(protected shape: Circle | Rect) {}
+    constructor({
+        elasticity = 0.5,
+        name = '',
+        shape,
+    }: BaseBodyArgs) {
+        this.elasticity = elasticity;
+        this.name = name;
+        this.shape = shape;
+    }
 
     get x(): number {
         return this.shape.x;

@@ -1,8 +1,9 @@
 import { Controls } from './game/Controls';
 import { Renderer } from './game/Renderer';
 import { setupEnvironmentA } from './game/environments/environmentA';
+import { setupChaos } from './game/environments/chaos';
 
-const [world, player] = setupEnvironmentA();
+const [world, player] = setupChaos();
 
 const renderer = new Renderer(world, player.body);
 const controls = new Controls(player);

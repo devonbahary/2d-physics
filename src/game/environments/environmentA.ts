@@ -12,10 +12,10 @@ const settings = {
 };
 
 export const setupEnvironmentA = (): [World, GameEntity] => {    
-    const world = new World(
-        scaleToPhysicsLength(settings.world.tileWidth),
-        scaleToPhysicsLength(settings.world.tileHeight),
-    );
+    const world = new World({
+        width: scaleToPhysicsLength(settings.world.tileWidth),
+        height: scaleToPhysicsLength(settings.world.tileHeight),
+    });
 
     const player = new GameEntity(world, new RectBody());
     player.body.name = 'player';

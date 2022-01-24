@@ -7,10 +7,27 @@ import {
 import { getCollisionEvent } from './collisions/collision-detection.utility';
 import { Vector } from './Vector';
 
+type WorldArgs = {
+    width: number;
+    height: number;
+    noFriction?: boolean;
+}
+
 export class World {
     public bodies: Body[] = [];
+    public width: number;
+    public height: number;
+    private noFriction: boolean;
 
-    constructor(public width: number, public height: number) {
+    constructor({
+        width,
+        height,
+        noFriction = false,
+    }: WorldArgs
+    ) {
+        this.width = width;
+        this.height = height;
+        this.noFriction = noFriction;
         this.initBoundaries();
     }
 
@@ -50,23 +67,23 @@ export class World {
             }
         } else {
             body.progressMovement();
-            body.applyFriction();
+            if (!this.noFriction) body.applyFriction();
         }
     }
 
     private initBoundaries(): void {
         const { width, height } = this;
 
-        const topBoundary = new RectBody(width, 1);
+        const topBoundary = new RectBody({ width, height: 1, elasticity: 1 });
         topBoundary.moveTo(new Vector(width / 2, -1));
 
-        const rightBoundary = new RectBody(1, height);
+        const rightBoundary = new RectBody({ width: 1, height, elasticity: 1 });
         rightBoundary.moveTo(new Vector(width + 1, height / 2));
 
-        const bottomBoundary = new RectBody(width, 1);
+        const bottomBoundary = new RectBody({width, height: 1, elasticity: 1 });
         bottomBoundary.moveTo(new Vector(bottomBoundary.width / 2, height + 1));
 
-        const leftBoundary = new RectBody(1, height);
+        const leftBoundary = new RectBody({ width: 1, height, elasticity: 1 });
         leftBoundary.moveTo(new Vector(-1, height / 2));
 
         for (const boundary of [topBoundary, rightBoundary, bottomBoundary, leftBoundary]) {

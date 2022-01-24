@@ -1,11 +1,21 @@
 import { Circle } from './shapes/Circle';
-import { BaseBody } from './BaseBody';
+import { BaseBody, BaseBodyArgs } from './BaseBody';
+
+type CircleBodyArgs = Omit<BaseBodyArgs, 'shape'> & {
+    radius?: number;
+};
 
 export class CircleBody extends BaseBody {
     protected shape: Circle;
 
-    constructor(radius?: number) {
-        super(new Circle(radius));
+    constructor({ 
+        radius,
+        ...rest
+     }: CircleBodyArgs = {}) {
+        super({
+            shape: new Circle(radius),
+            ...rest,
+        });
     }
 
     get radius(): number {
