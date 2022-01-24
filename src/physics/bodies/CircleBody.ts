@@ -8,10 +8,7 @@ type CircleBodyArgs = Omit<BaseBodyArgs, 'shape'> & {
 export class CircleBody extends BaseBody {
     protected shape: Circle;
 
-    constructor({ 
-        radius,
-        ...rest
-     }: CircleBodyArgs = {}) {
+    constructor({ radius, ...rest }: CircleBodyArgs = {}) {
         super({
             shape: new Circle(radius),
             ...rest,

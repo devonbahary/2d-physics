@@ -20,11 +20,7 @@ export abstract class BaseBody {
     private _velocity = new Vector();
     private _isFixed = false;
 
-    constructor({
-        elasticity = 0.5,
-        name = '',
-        shape,
-    }: BaseBodyArgs) {
+    constructor({ elasticity = 0.5, name = '', shape }: BaseBodyArgs) {
         this.elasticity = elasticity;
         this.name = name;
         this.shape = shape;

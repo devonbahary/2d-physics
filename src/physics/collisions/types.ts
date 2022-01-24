@@ -29,4 +29,8 @@ export type RectVsRectCollisionEvent = {
     pointOfContact: Vector;
 };
 
-export type CollisionEvent = CircleVsCircleCollisionEvent | CircleVsRectCollisionEvent | RectVsCircleCollisionEvent | RectVsRectCollisionEvent;
+export type CollisionEvent =
+    | CircleVsCircleCollisionEvent
+    | CircleVsRectCollisionEvent
+    | RectVsCircleCollisionEvent
+    | RectVsRectCollisionEvent;

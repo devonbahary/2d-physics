@@ -11,7 +11,7 @@ type WorldArgs = {
     width: number;
     height: number;
     noFriction?: boolean;
-}
+};
 
 export class World {
     public bodies: Body[] = [];
@@ -19,12 +19,7 @@ export class World {
     public height: number;
     private noFriction: boolean;
 
-    constructor({
-        width,
-        height,
-        noFriction = false,
-    }: WorldArgs
-    ) {
+    constructor({ width, height, noFriction = false }: WorldArgs) {
         this.width = width;
         this.height = height;
         this.noFriction = noFriction;
@@ -80,7 +75,7 @@ export class World {
         const rightBoundary = new RectBody({ width: 1, height, elasticity: 1 });
         rightBoundary.moveTo(new Vector(width + 1, height / 2));
 
-        const bottomBoundary = new RectBody({width, height: 1, elasticity: 1 });
+        const bottomBoundary = new RectBody({ width, height: 1, elasticity: 1 });
         bottomBoundary.moveTo(new Vector(bottomBoundary.width / 2, height + 1));
 
         const leftBoundary = new RectBody({ width: 1, height, elasticity: 1 });

@@ -42,7 +42,7 @@ export class GameEntity {
 
             const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
             this.body.setVelocity(slideVector);
-            
+
             return;
         } else if (isCircleVsRectCollisionEvent(collisionEvent)) {
             const { timeOfCollision, pointOfContact } = collisionEvent;
@@ -64,7 +64,7 @@ export class GameEntity {
 
             const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
             this.body.setVelocity(slideVector);
-            
+
             return;
         } else if (isRectVsRectCollisionEvent(collisionEvent)) {
             const { movingBody, timeOfCollision, pointOfContact } = collisionEvent;

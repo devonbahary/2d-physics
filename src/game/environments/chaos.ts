@@ -15,9 +15,9 @@ const settings = {
 
 const NUM_CHARACTERS = 10;
 
-const rand = () => Boolean(Math.round(Math.random()));
+const rand = (): boolean => Boolean(Math.round(Math.random()));
 
-export const setupChaos = (): [World, GameEntity] => {    
+export const setupChaos = (): [World, GameEntity] => {
     const world = new World({
         width: scaleToPhysicsLength(settings.world.tileWidth),
         height: scaleToPhysicsLength(settings.world.tileHeight),
@@ -45,11 +45,11 @@ export const setupChaos = (): [World, GameEntity] => {
         // if (rand()) {
         //     body.setFixed(true);
         // } else {
-            gameEntity.move(new Vector(Math.random(), Math.random()));
+        gameEntity.move(new Vector(Math.random(), Math.random()));
         // }
 
         world.addBody(body);
     }
 
-    return [ world, player ];
+    return [world, player];
 };

@@ -11,7 +11,7 @@ const settings = {
     },
 };
 
-export const setupEnvironmentA = (): [World, GameEntity] => {    
+export const setupEnvironmentA = (): [World, GameEntity] => {
     const world = new World({
         width: scaleToPhysicsLength(settings.world.tileWidth),
         height: scaleToPhysicsLength(settings.world.tileHeight),
@@ -48,5 +48,5 @@ export const setupEnvironmentA = (): [World, GameEntity] => {
     world.addBody(fixedCircle.body);
     world.addBody(fixedRect.body);
 
-    return [ world, player ];
+    return [world, player];
 };
