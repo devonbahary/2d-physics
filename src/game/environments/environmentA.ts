@@ -26,7 +26,6 @@ export const setupEnvironmentA = (): [World, GameEntity] => {
 
     const circle = new GameEntity(world);
     circle.body.name = 'circle';
-    // circle.body.setFixed(true);
 
     const fixedCircle = new GameEntity(world);
     fixedCircle.body.name = 'fixed-circle';
@@ -34,7 +33,6 @@ export const setupEnvironmentA = (): [World, GameEntity] => {
 
     const rect = new GameEntity(world, new RectBody());
     rect.body.name = 'rect';
-    // rect.body.setFixed(true);
 
     const fixedRect = new GameEntity(world, new RectBody());
     fixedRect.body.name = 'fixed-rect';
