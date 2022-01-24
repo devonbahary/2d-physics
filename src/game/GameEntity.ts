@@ -4,6 +4,8 @@ import { getCollisionEvent } from 'src/physics/collisions/collision-detection.ut
 import {
     isCircleVsCircleCollisionEvent,
     isCircleVsRectCollisionEvent,
+    isRectVsCircleCollisionEvent,
+    isRectVsRectCollisionEvent,
 } from 'src/physics/collisions/collision-resolver.utility';
 import { CollisionEvent } from 'src/physics/collisions/types';
 import { ErrorMessage } from 'src/physics/constants';
@@ -40,6 +42,8 @@ export class GameEntity {
 
             const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
             this.body.setVelocity(slideVector);
+            
+            return;
         } else if (isCircleVsRectCollisionEvent(collisionEvent)) {
             const { timeOfCollision, pointOfContact } = collisionEvent;
 
@@ -49,6 +53,30 @@ export class GameEntity {
 
             const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
             this.body.setVelocity(slideVector);
+
+            return;
+        } else if (isRectVsCircleCollisionEvent(collisionEvent)) {
+            const { collisionBody, timeOfCollision, pointOfContact } = collisionEvent;
+
+            this.body.progressMovement(timeOfCollision);
+            const diffPos = Vector.subtract(collisionBody.pos, pointOfContact);
+            const tangentOfContact = Vector.normal(diffPos);
+
+            const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
+            this.body.setVelocity(slideVector);
+            
+            return;
+        } else if (isRectVsRectCollisionEvent(collisionEvent)) {
+            const { movingBody, timeOfCollision, pointOfContact } = collisionEvent;
+
+            this.body.progressMovement(timeOfCollision);
+            const diffPos = Vector.subtract(pointOfContact, movingBody.pos);
+            const tangentOfContact = Vector.normal(diffPos);
+
+            const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
+            this.body.setVelocity(slideVector);
+
+            return;
         }
 
         throw new Error(ErrorMessage.unexpectedBodyType);
