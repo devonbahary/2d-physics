@@ -6,8 +6,8 @@ import { scaleToPhysicsLength } from '../utilities';
 
 const settings = {
     world: {
-        tileWidth: 5,
-        tileHeight: 5,
+        tileWidth: 7,
+        tileHeight: 7,
     },
 };
 
@@ -40,10 +40,10 @@ export const setupEnvironmentA = (): [World, GameEntity] => {
     fixedRect.body.name = 'fixed-rect';
     fixedRect.body.setFixed(true);
 
-    circle.moveTo(new Vector(3, 1));
-    rect.moveTo(new Vector(1, 1));
-    fixedCircle.moveTo(new Vector(3, 3));
-    fixedRect.moveTo(new Vector(1, 3));
+    circle.moveTo(new Vector(4, 2));
+    rect.moveTo(new Vector(2, 2));
+    fixedCircle.moveTo(new Vector(4, 4));
+    fixedRect.moveTo(new Vector(2, 4));
 
     world.addBody(circle.body);
     world.addBody(rect.body);
