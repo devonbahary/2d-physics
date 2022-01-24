@@ -71,9 +71,13 @@ export const getCollisionFinalVelocities = (collisionEvent: CollisionEvent): [Ve
     }
 
     if (isRectVsCircleCollisionEvent(collisionEvent)) {
+        const { pointOfContact } = collisionEvent;
+        
         const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
+        const [finalVelocityA] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
 
-        const [finalVelocityA, finalVelocityB] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
+        const diffPosPointOfContact = Vector.subtract(pointOfContact, collisionBody.pos);
+        const [,finalVelocityB] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPosPointOfContact);
 
         const cor = getCoefficientOfRestitution(movingBody, collisionBody);
 
