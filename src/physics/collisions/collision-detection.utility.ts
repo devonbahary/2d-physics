@@ -1,9 +1,10 @@
 import { CircleBody } from '../bodies/CircleBody';
 import { RectBody } from '../bodies/RectBody';
 import { Body } from '../bodies/types';
-import { quadratic, roundForFloatingPoint } from '../math/math.utilities';
+import { ErrorMessage } from '../constants';
+import { getExactOverlap, hasOverlap, quadratic, roundForFloatingPoint } from '../math/math.utilities';
 import { Vector } from '../Vector';
-import { CircleVsRectCollisionEvent, CollisionEvent } from './types';
+import { CircleVsRectCollisionEvent, CollisionEvent, RectVsCircleCollisionEvent, RectVsRectCollisionEvent } from './types';
 
 enum Axis {
     x = 'x',
@@ -18,6 +19,18 @@ type CircleVsRectPossibleCollision = {
     axisOfCollision: Axis;
 };
 
+type RectVsCirclePossibleCollision = {
+    movingRectBoundary: number;
+    collisionCircleBoundary: number;
+    axisOfCollision: Axis;
+};
+
+type RectVsRectPossibleCollision = {
+    movingBoundary: number;
+    collisionBoundary: number;
+    axisOfCollision: Axis;
+}
+
 export const getCollisionEvent = (movingBody: Body, worldBodies: Body[]): CollisionEvent | null => {
     return worldBodies.reduce<CollisionEvent | null>((acc, collisionBody) => {
         if (movingBody === collisionBody) return acc;
@@ -28,7 +41,7 @@ export const getCollisionEvent = (movingBody: Body, worldBodies: Body[]): Collis
 
                 if (!shouldConsiderTimeOfCollision(timeOfCollision, acc?.timeOfCollision)) return acc;
 
-                if (willMovingBodyPenetrateCollisionBody(movingBody, collisionBody, timeOfCollision)) {
+                if (willMovingBodyPenetrateCollisionBody(movingBody.pos, collisionBody.pos, movingBody.velocity, timeOfCollision)) {
                     return {
                         movingBody,
                         collisionBody,
@@ -39,19 +52,40 @@ export const getCollisionEvent = (movingBody: Body, worldBodies: Body[]): Collis
                 return acc;
             } else if (collisionBody instanceof RectBody) {
                 // if a collision occurs with a circle side, then we don't need to check for corners
-                const rectCollision =
+                const collisionEvent =
                     getCircleVsRectSideCollision(movingBody, collisionBody) ||
                     getCircleVsRectCornerCollision(movingBody, collisionBody);
 
-                if (!rectCollision) return acc;
+                if (!collisionEvent) return acc;
 
-                if (!acc || acc.timeOfCollision > rectCollision.timeOfCollision) return rectCollision;
+                if (!acc || acc.timeOfCollision > collisionEvent.timeOfCollision) return collisionEvent;
+
+                return acc;
+            }
+        } else if (movingBody instanceof RectBody) {
+            if (collisionBody instanceof CircleBody) {
+                // if a collision occurs with a circle side, then we don't need to check for corners
+                const collisionEvent =
+                    getRectVsCircleSideCollision(movingBody, collisionBody) ||
+                    getRectVsCircleCornerCollision(movingBody, collisionBody);
+
+                if (!collisionEvent) return acc;
+
+                if (!acc || acc.timeOfCollision > collisionEvent.timeOfCollision) return collisionEvent;
+
+                return acc;
+            } else if (collisionBody instanceof RectBody) {
+                const collisionEvent = getRectVsRectCollision(movingBody, collisionBody);
+                
+                if (!collisionEvent) return acc;
+
+                if (!acc || acc.timeOfCollision > collisionEvent.timeOfCollision) return collisionEvent;
 
                 return acc;
             }
         }
-
-        return acc;
+        
+        throw new Error(ErrorMessage.unexpectedBodyType);
     }, null);
 };
 
@@ -85,15 +119,13 @@ const getClosestTimeOfCollision = (roots: number[]): TimeOfCollision => {
 };
 
 const getCircleVsRectSideCollision = (circle: CircleBody, rect: RectBody): CircleVsRectCollisionEvent | null => {
-    const { velocity } = circle;
-
     return getCircleVsRectPossibleSideCollisions(circle, rect).reduce<CircleVsRectCollisionEvent | null>(
         (acc, sideCollision) => {
             const { movingCircleBoundary, collisionRectBoundary, axisOfCollision } = sideCollision;
 
             const isXAlignedCollision = axisOfCollision === 'x';
-            const rateOfChangeInAxis = isXAlignedCollision ? velocity.x : velocity.y;
-            const rateOfChangeInOtherAxis = isXAlignedCollision ? velocity.y : velocity.x;
+            const rateOfChangeInAxis = isXAlignedCollision ? circle.velocity.x : circle.velocity.y;
+            const rateOfChangeInOtherAxis = isXAlignedCollision ? circle.velocity.y : circle.velocity.x;
 
             const timeOfCollision = getTimeOfAxisAlignedCollision(
                 movingCircleBoundary,
@@ -109,6 +141,7 @@ const getCircleVsRectSideCollision = (circle: CircleBody, rect: RectBody): Circl
             const rectOtherAxisLowerBoundary = isXAlignedCollision ? rect.y0 : rect.x0;
             const rectOtherAxisUpperBoundary = isXAlignedCollision ? rect.y1 : rect.x1;
 
+            // TODO: can extract to fn?
             if (
                 rectOtherAxisLowerBoundary <= otherAxisAtTimeOfCollision &&
                 otherAxisAtTimeOfCollision <= rectOtherAxisUpperBoundary
@@ -123,7 +156,7 @@ const getCircleVsRectSideCollision = (circle: CircleBody, rect: RectBody): Circl
                           y: collisionRectBoundary,
                       };
 
-                if (willMovingBodyPenetrateCollisionBody(circle, pointOfContact, timeOfCollision)) {
+                if (willMovingBodyPenetrateCollisionBody(circle.pos, pointOfContact, circle.velocity, timeOfCollision)) {
                     return {
                         movingBody: circle,
                         collisionBody: rect,
@@ -145,7 +178,7 @@ const getCircleVsRectCornerCollision = (circle: CircleBody, rect: RectBody): Cir
 
         if (!shouldConsiderTimeOfCollision(timeOfCollision, acc?.timeOfCollision)) return acc;
 
-        if (willMovingBodyPenetrateCollisionBody(circle, corner, timeOfCollision)) {
+        if (willMovingBodyPenetrateCollisionBody(circle.pos, corner, circle.velocity, timeOfCollision)) {
             return {
                 movingBody: circle,
                 collisionBody: rect,
@@ -210,12 +243,230 @@ const getCircleVsRectPossibleSideCollisions = (circle: CircleBody, rect: RectBod
     ];
 };
 
+const getRectVsCircleSideCollision = (rect: RectBody, circle: CircleBody): RectVsCircleCollisionEvent | null => {
+    // TODO: may not need pointOfContact; revisit downstream usages
+    return getRectVsCirclePossibleSideCollisions(rect, circle).reduce<RectVsCircleCollisionEvent | null>(
+        (acc, sideCollision) => {
+            const { axisOfCollision, movingRectBoundary, collisionCircleBoundary } = sideCollision;
+
+            const isXAlignedCollision = axisOfCollision === 'x';
+            const rateOfChangeInAxis = isXAlignedCollision ? rect.velocity.x : rect.velocity.y;
+            const rateOfChangeInOtherAxis = isXAlignedCollision ? rect.velocity.y : rect.velocity.x;
+
+            const timeOfCollision = getTimeOfAxisAlignedCollision(
+                movingRectBoundary,
+                collisionCircleBoundary,
+                rateOfChangeInAxis,
+            );
+
+            if (!shouldConsiderTimeOfCollision(timeOfCollision, acc?.timeOfCollision)) return acc;
+
+            const changeInOtherAxisAtTimeOfCollision = rateOfChangeInOtherAxis * timeOfCollision;
+            const rectOtherAxisLowerBoundary = isXAlignedCollision ? rect.y0 : rect.x0;
+            const rectOtherAxisUpperBoundary = isXAlignedCollision ? rect.y1 : rect.x1;
+
+            const rectOtherAxisLowerBoundaryAtTimeOfCollision =
+                rectOtherAxisLowerBoundary + changeInOtherAxisAtTimeOfCollision;
+            const rectOtherAxisUpperBoundaryAtTimeOfCollision =
+                rectOtherAxisUpperBoundary + changeInOtherAxisAtTimeOfCollision;
+
+            const circleCenterOfAxisCollision = isXAlignedCollision ? circle.y : circle.x;
+
+            // TODO: can extract to fn?
+            if (
+                rectOtherAxisLowerBoundaryAtTimeOfCollision <= circleCenterOfAxisCollision &&
+                circleCenterOfAxisCollision <= rectOtherAxisUpperBoundaryAtTimeOfCollision
+            ) {
+                const circleOtherAxisValueAtTimeOfCollision = isXAlignedCollision
+                    ? circle.y
+                    : circle.x;
+
+                const pointOfContact = isXAlignedCollision
+                    ? {
+                            x: collisionCircleBoundary,
+                            y: circleOtherAxisValueAtTimeOfCollision,
+                        }
+                    : {
+                            x: circleOtherAxisValueAtTimeOfCollision,
+                            y: collisionCircleBoundary,
+                        };
+
+                if (willMovingBodyPenetrateCollisionBody(pointOfContact, circle.pos, rect.velocity, 0)) {
+                    return {
+                        movingBody: rect,
+                        collisionBody: circle,
+                        timeOfCollision,
+                        pointOfContact,
+                    };
+                }
+            }
+
+            return acc;
+        },
+        null,
+    );
+};
+
+const getRectVsCircleCornerCollision = (rect: RectBody, circle: CircleBody): RectVsCircleCollisionEvent | null => {
+    return getRectCorners(rect).reduce<RectVsCircleCollisionEvent | null>((acc, corner, index) => {
+        const timeOfCollision = getRectCornerVsCircleTimeOfCollision(corner, circle, rect.velocity);
+
+        if (!shouldConsiderTimeOfCollision(timeOfCollision, acc?.timeOfCollision)) return acc;
+
+        if (willMovingBodyPenetrateCollisionBody(corner, circle.pos, rect.velocity, timeOfCollision)) {
+            return {
+                movingBody: rect,
+                collisionBody: circle,
+                timeOfCollision,
+                pointOfContact: corner,
+            };
+        }
+
+        return acc;
+    }, null);
+};
+
+const getRectVsCirclePossibleSideCollisions = (
+    rect: RectBody,
+    circle: CircleBody,
+): RectVsCirclePossibleCollision[] => {
+    const { radius } = circle;
+
+    return [
+        // rect right side into circle left side
+        {
+            movingRectBoundary: rect.x1,
+            collisionCircleBoundary: circle.x - radius,
+            axisOfCollision: Axis.x,
+        },
+        // rect left side into circle right side
+        {
+            movingRectBoundary: rect.x0,
+            collisionCircleBoundary: circle.x + radius,
+            axisOfCollision: Axis.x,
+        },
+        // rect bottom side into circle top side
+        {
+            movingRectBoundary: rect.y1,
+            collisionCircleBoundary: circle.y - radius,
+            axisOfCollision: Axis.y,
+        },
+        // rect top side into circle bottom side
+        {
+            movingRectBoundary: rect.y0,
+            collisionCircleBoundary: circle.y + radius,
+            axisOfCollision: Axis.y,
+        },
+    ];
+};
+
+const getRectCornerVsCircleTimeOfCollision = (corner: Vector, circle: CircleBody, velocity: Vector): TimeOfCollision => {
+    const diffPos = Vector.subtract(corner, circle.pos);
+    return getTimeOfCircleVsPointCollision(diffPos, circle.radius, velocity);
+};
+
 const getRectCorners = (rect: RectBody): Vector[] => [
     new Vector(rect.x0, rect.y0), // top left
     new Vector(rect.x1, rect.y0), // top right
     new Vector(rect.x1, rect.y1), // bottom right
     new Vector(rect.x0, rect.y1), // bottom left
 ];
+
+const getRectVsRectCollision = (movingBody: RectBody, collisionBody: RectBody): RectVsRectCollisionEvent | null => {
+    return getRectVsRectPossibleCollisions(movingBody, collisionBody).reduce<RectVsRectCollisionEvent | null>((acc, possibleSideCollision) => {
+        const { movingBoundary, collisionBoundary, axisOfCollision } = possibleSideCollision;
+
+        const isXAlignedCollision = axisOfCollision === Axis.x;
+        
+        const pathToCollisionBoundary = isXAlignedCollision 
+            ? new Vector(collisionBoundary - movingBody.x, 0) 
+            : new Vector(0, collisionBoundary - movingBody.y);
+
+        const pointOfContact = Vector.add(movingBody.pos, pathToCollisionBoundary);
+
+        if (!isPointMovingTowardsPoint(movingBody.pos, movingBody.velocity, pointOfContact)) {
+            return acc;
+        }
+
+        const changeInAxis = isXAlignedCollision ? movingBody.velocity.x : movingBody.velocity.y;
+        
+        const timeOfCollision = getTimeOfAxisAlignedCollision(movingBoundary, collisionBoundary, changeInAxis);
+
+        if (!shouldConsiderTimeOfCollision(timeOfCollision, acc?.timeOfCollision)) return acc;
+
+        const changeInOtherAxis = isXAlignedCollision ? movingBody.velocity.y : movingBody.velocity.x;
+
+        const movingBodyLowerBoundary = isXAlignedCollision ? movingBody.y0 : movingBody.x0;
+        const movingBodyUpperBoundary = isXAlignedCollision ? movingBody.y1 : movingBody.x1;
+
+        const movingBodyLowerBoundaryAtCollision = movingBodyLowerBoundary + changeInOtherAxis * timeOfCollision;
+        const movingBodyUpperBoundaryAtCollision = movingBodyUpperBoundary + changeInOtherAxis * timeOfCollision;
+
+        const collisionBodyLowerBoundary = isXAlignedCollision ? collisionBody.y0 : collisionBody.x0;
+        const collisionBodyUpperBoundary = isXAlignedCollision ? collisionBody.y1 : collisionBody.x1;
+
+        if (hasOverlap(movingBodyLowerBoundaryAtCollision, movingBodyUpperBoundaryAtCollision, collisionBodyLowerBoundary, collisionBodyUpperBoundary)) {
+            const exactOverlap = getExactOverlap(movingBodyLowerBoundaryAtCollision, movingBodyUpperBoundaryAtCollision, collisionBodyLowerBoundary, collisionBodyUpperBoundary);
+
+            // when there's exact overlap, a rect may be grazing a corner..
+            if (exactOverlap !== null) {
+                const pointOfContact = isXAlignedCollision
+                    ? new Vector(collisionBoundary, exactOverlap)
+                    : new Vector(exactOverlap, collisionBoundary);
+
+                // ..and we only want to consider a collision if the rect is moving towards the other rect
+                if (!isPointMovingTowardsPoint(pointOfContact, movingBody.velocity, collisionBody.pos)) {
+                    return acc;
+                }
+
+                return {
+                    movingBody,
+                    collisionBody,
+                    timeOfCollision, 
+                    pointOfContact,
+                };
+            }
+
+            return {
+                movingBody,
+                collisionBody,
+                timeOfCollision,
+                pointOfContact, 
+            };
+        }
+
+        return acc;
+    }, null);
+};
+
+const getRectVsRectPossibleCollisions = (movingBody: RectBody, collisionBody: RectBody): RectVsRectPossibleCollision[] => {
+    return [
+        // right side -> left side
+        {
+            movingBoundary: movingBody.x1,
+            collisionBoundary: collisionBody.x0,
+            axisOfCollision: Axis.x,
+        },
+        // left side -> right side
+        {
+            movingBoundary: movingBody.x0,
+            collisionBoundary: collisionBody.x1,
+            axisOfCollision: Axis.x,
+        },
+        // bottom side -> top side
+        {
+            movingBoundary: movingBody.y1,
+            collisionBoundary: collisionBody.y0,
+            axisOfCollision: Axis.y,
+        },
+        // top side -> bottom side
+        {
+            movingBoundary: movingBody.y0,
+            collisionBoundary: collisionBody.y1,
+            axisOfCollision: Axis.y,
+        },
+    ]
+};
 
 const getTimeOfAxisAlignedCollision = (
     movingBoundary: number,
@@ -240,19 +491,14 @@ const isWithinTimestep = (timeOfCollision: TimeOfCollision): timeOfCollision is 
     return roundForFloatingPoint(timeOfCollision) >= 0 && timeOfCollision <= 1;
 };
 
-const willMovingBodyPenetrateCollisionBody = (movingBody: Body, point: Vector, timeOfCollision: number): boolean => {
-    const currentPos = movingBody.pos;
-
-    movingBody.progressMovement(timeOfCollision);
-    const willPenetrate = isBodyMovingTowardsPoint(movingBody, point);
-
-    movingBody.moveTo(currentPos);
-
-    return willPenetrate;
+const willMovingBodyPenetrateCollisionBody = (movingPoint: Vector, collisionPoint: Vector, velocity: Vector, timeOfCollision: number): boolean => {
+    const progression = Vector.mult(velocity, timeOfCollision);
+    const pointAtTimeOfCollision = Vector.add(movingPoint, progression);
+    return isPointMovingTowardsPoint(pointAtTimeOfCollision, velocity, collisionPoint);
 };
 
-const isBodyMovingTowardsPoint = (movingBody: Body, point: Vector): boolean => {
-    const diffPos = Vector.subtract(point, movingBody.pos);
-    const dot = Vector.dot(movingBody.velocity, diffPos);
+const isPointMovingTowardsPoint = (movingPoint: Vector, velocity: Vector, collisionPoint: Vector): boolean => {
+    const diffPos = Vector.subtract(collisionPoint, movingPoint);
+    const dot = Vector.dot(velocity, diffPos);
     return roundForFloatingPoint(dot) > 0;
 };

@@ -15,4 +15,18 @@ export type CircleVsRectCollisionEvent = {
     pointOfContact: Vector;
 };
 
-export type CollisionEvent = CircleVsCircleCollisionEvent | CircleVsRectCollisionEvent;
+export type RectVsCircleCollisionEvent = {
+    movingBody: RectBody;
+    collisionBody: CircleBody;
+    timeOfCollision: number;
+    pointOfContact: Vector;
+};
+
+export type RectVsRectCollisionEvent = {
+    movingBody: RectBody;
+    collisionBody: RectBody;
+    timeOfCollision: number;
+    pointOfContact: Vector;
+};
+
+export type CollisionEvent = CircleVsCircleCollisionEvent | CircleVsRectCollisionEvent | RectVsCircleCollisionEvent | RectVsRectCollisionEvent;
