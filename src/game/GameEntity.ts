@@ -1,12 +1,12 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { Body } from 'src/physics/bodies/types';
-import { getCollisionEvent } from 'src/physics/collisions/collision-detection.utility';
+import { getCollisionEvent } from 'src/physics/collisions/collision-detection/collision-detection.utility';
 import {
     isCircleVsCircleCollisionEvent,
     isCircleVsRectCollisionEvent,
     isRectVsCircleCollisionEvent,
     isRectVsRectCollisionEvent,
-} from 'src/physics/collisions/collision-resolver.utility';
+} from 'src/physics/collisions/collision-event.utility';
 import { CollisionEvent } from 'src/physics/collisions/types';
 import { ErrorMessage } from 'src/physics/constants';
 import { Vector } from 'src/physics/Vector';

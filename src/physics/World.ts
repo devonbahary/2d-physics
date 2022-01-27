@@ -1,10 +1,10 @@
 import { RectBody } from './bodies/RectBody';
 import { Body } from './bodies/types';
 import {
-    getCollisionFinalVelocities,
-    getFixedCollisionRedirectedVelocity,
+    getCollisionResolvedVelocities,
+    getFixedCollisionResolvedVelocity,
 } from './collisions/collision-resolver.utility';
-import { getCollisionEvent } from './collisions/collision-detection.utility';
+import { getCollisionEvent } from './collisions/collision-detection/collision-detection.utility';
 import { Vector } from './Vector';
 
 type WorldArgs = {
@@ -53,12 +53,12 @@ export class World {
 
             // resolve collision and end movement
             if (collisionBody.isFixed) {
-                const redirectedVelocity = getFixedCollisionRedirectedVelocity(collisionEvent);
-                body.setVelocity(redirectedVelocity);
+                const resolvedVelocity = getFixedCollisionResolvedVelocity(collisionEvent);
+                body.setVelocity(resolvedVelocity);
             } else {
-                const [finalVelocityA, finalVelocityB] = getCollisionFinalVelocities(collisionEvent);
-                body.setVelocity(finalVelocityA);
-                collisionBody.setVelocity(finalVelocityB);
+                const [resolvedVelocityA, resolvedVelocityB] = getCollisionResolvedVelocities(collisionEvent);
+                body.setVelocity(resolvedVelocityA);
+                collisionBody.setVelocity(resolvedVelocityB);
             }
         } else {
             body.progressMovement();
