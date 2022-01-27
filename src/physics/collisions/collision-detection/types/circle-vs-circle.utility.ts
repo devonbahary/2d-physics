@@ -1,7 +1,7 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { quadratic } from 'src/physics/math/math.utilities';
-import { getClosestTimeOfCollision } from '../collision-detection.utility';
 import { TimeOfCollision } from '../types';
+import { getClosestTimeOfCollision } from '../utility';
 
 export const getClosestTimeOfCircleVsCircleCollision = (
     movingBody: CircleBody,

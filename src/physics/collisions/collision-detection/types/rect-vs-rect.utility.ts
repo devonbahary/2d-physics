@@ -1,13 +1,9 @@
 import { RectBody } from 'src/physics/bodies/RectBody';
 import { getExactOverlap, hasOverlap } from 'src/physics/math/math.utilities';
 import { Vector } from 'src/physics/Vector';
-import {
-    isPointMovingTowardsPoint,
-    getTimeOfAxisAlignedCollision,
-    shouldConsiderTimeOfCollision,
-} from '../collision-detection.utility';
 import { RectVsRectCollisionEvent } from '../../types';
 import { Axis, RectVsRectPossibleCollision } from '../types';
+import { getTimeOfAxisAlignedCollision, isPointMovingTowardsPoint, shouldConsiderTimeOfCollision } from '../utility';
 
 export const getRectVsRectCollisionEvent = (
     movingBody: RectBody,

@@ -1,15 +1,9 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { RectBody } from 'src/physics/bodies/RectBody';
 import { Vector } from 'src/physics/Vector';
-import {
-    getRectCorners,
-    getTimeOfAxisAlignedCollision,
-    getTimeOfCircleVsPointCollision,
-    shouldConsiderTimeOfCollision,
-    willMovingBodyPenetrateCollisionBody,
-} from '../collision-detection.utility';
 import { CircleVsRectCollisionEvent } from '../../types';
 import { Axis, CircleVsRectPossibleCollision, TimeOfCollision } from '../types';
+import { getRectCorners, getTimeOfAxisAlignedCollision, getTimeOfCircleVsPointCollision, shouldConsiderTimeOfCollision, willMovingBodyPenetrateCollisionBody } from '../utility';
 
 export const getCircleVsRectCollisionEvent = (
     movingBody: CircleBody,
