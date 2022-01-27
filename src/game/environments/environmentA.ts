@@ -1,3 +1,4 @@
+import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { RectBody } from 'src/physics/bodies/RectBody';
 import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
@@ -17,7 +18,7 @@ export const setupEnvironmentA = (): [World, GameEntity] => {
         height: scaleToPhysicsLength(settings.world.tileHeight),
     });
 
-    const player = new GameEntity(world, new RectBody());
+    const player = new GameEntity(world, new CircleBody());
     player.body.name = 'player';
 
     player.moveTo(new Vector(Math.floor(settings.world.tileWidth / 2), Math.floor(settings.world.tileHeight / 2)));
