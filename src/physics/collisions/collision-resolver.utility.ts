@@ -47,6 +47,7 @@ export const getFixedCollisionRedirectedVelocity = (collisionEvent: CollisionEve
 
 export const getCollisionFinalVelocities = (collisionEvent: CollisionEvent): [Vector, Vector] => {
     const { movingBody, collisionBody } = collisionEvent;
+
     if (isCircleVsCircleCollisionEvent(collisionEvent)) {
         const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
         const [finalVelocityA, finalVelocityB] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
@@ -59,11 +60,8 @@ export const getCollisionFinalVelocities = (collisionEvent: CollisionEvent): [Ve
     if (isCircleVsRectCollisionEvent(collisionEvent)) {
         const { pointOfContact } = collisionEvent;
 
-        const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
-        const [, finalVelocityB] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
-
         const diffPosPointOfContact = Vector.subtract(movingBody.pos, pointOfContact);
-        const [finalVelocityA] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPosPointOfContact);
+        const [finalVelocityA, finalVelocityB] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPosPointOfContact);
 
         const cor = getCoefficientOfRestitution(movingBody, collisionBody);
 
@@ -73,11 +71,8 @@ export const getCollisionFinalVelocities = (collisionEvent: CollisionEvent): [Ve
     if (isRectVsCircleCollisionEvent(collisionEvent)) {
         const { pointOfContact } = collisionEvent;
         
-        const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
-        const [finalVelocityA] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
-
         const diffPosPointOfContact = Vector.subtract(pointOfContact, collisionBody.pos);
-        const [,finalVelocityB] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPosPointOfContact);
+        const [finalVelocityA,finalVelocityB] = getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPosPointOfContact);
 
         const cor = getCoefficientOfRestitution(movingBody, collisionBody);
 
