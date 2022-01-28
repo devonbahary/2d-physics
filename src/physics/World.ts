@@ -49,8 +49,6 @@ export class World {
     }
 
     private updateBody(body: Body): void {
-        if (!body.isMoving()) return;
-
         const collisionEvent = getCollisionEvent(body, this.bodies);
 
         if (collisionEvent) {
