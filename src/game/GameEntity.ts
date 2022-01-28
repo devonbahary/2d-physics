@@ -23,10 +23,10 @@ export class GameEntity {
         this.body.setVelocity(movement);
 
         const collisionEvent = getCollisionEvent(this.body, this.world.bodies);
-        if (collisionEvent?.collisionBody.isFixed) this.moveTangentiallyOfCollisionBody(collisionEvent);
+        if (collisionEvent?.collisionBody.isFixed) this.moveTangentToCollisionBody(collisionEvent);
     }
 
-    private moveTangentiallyOfCollisionBody(collisionEvent: CollisionEvent): void {
+    private moveTangentToCollisionBody(collisionEvent: CollisionEvent): void {
         const { timeOfCollision } = collisionEvent;
 
         this.body.progressMovement(timeOfCollision);
