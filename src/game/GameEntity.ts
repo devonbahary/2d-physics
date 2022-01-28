@@ -1,6 +1,6 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { Body } from 'src/physics/bodies/types';
-import { getCollisionEvent } from 'src/physics/collisions/collision-detection/collision-detection.utility';
+import { getCollisionEvent } from 'src/physics/collisions/continuous-collision-detection/continuous-collision-detection';
 import {
     isCircleVsCircleCollisionEvent,
     isCircleVsRectCollisionEvent,

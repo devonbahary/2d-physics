@@ -1,10 +1,11 @@
 import { RectBody } from './bodies/RectBody';
 import { Body, Shape } from './bodies/types';
+import { intersects } from './collisions/collision-detection/collision-detection';
 import {
     getCollisionResolvedVelocities,
     getFixedCollisionResolvedVelocity,
 } from './collisions/collision-resolver.utility';
-import { intersects, getCollisionEvent } from './collisions/collision-detection/collision-detection.utility';
+import { getCollisionEvent } from './collisions/continuous-collision-detection/continuous-collision-detection';
 import { Vector } from './Vector';
 
 type WorldArgs = {
