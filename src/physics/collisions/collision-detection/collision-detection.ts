@@ -3,6 +3,7 @@ import { ErrorMessage } from '../../constants';
 import { Circle } from 'src/physics/bodies/shapes/Circle';
 import { Vector } from 'src/physics/Vector';
 import { Rect } from 'src/physics/bodies/shapes/Rect';
+import { roundForFloatingPoint } from 'src/physics/math/math.utilities';
 
 export const intersects = (shapeA: Shape, shapeB: Shape): boolean => {
     if (shapeA instanceof Circle && shapeB instanceof Circle) {
@@ -40,7 +41,7 @@ const doCircleAndRectOverlap = (circle: Circle, rect: Rect): boolean => {
     if (dx < rect.width / 2) return true;
     if (dy < rect.height / 2) return true;
 
-    const cornerDistance = (dx - rect.width / 2) ** 2 + (dy - rect.height / 2) ** 2;
+    const cornerDistance = roundForFloatingPoint((dx - rect.width / 2) ** 2 + (dy - rect.height / 2) ** 2);
 
     return cornerDistance < circle.radius ** 2;
 };
