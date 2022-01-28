@@ -18,7 +18,7 @@ export class GameEntity {
 
     constructor(private world: World, public body: Body = new CircleBody()) {}
 
-    // translate game coordinates to physics coordinates
+    // accepts game coordinates
     moveTo(pos: Vector): void {
         const translatedPos = gamePosToPhysicsPos(pos, this.body);
         this.body.moveTo(translatedPos);
