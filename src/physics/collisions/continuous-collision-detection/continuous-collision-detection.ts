@@ -8,10 +8,13 @@ import { getRectVsCircleCollisionEvent } from './collision-types/rect-vs-circle.
 import { getRectVsRectCollisionEvent } from './collision-types/rect-vs-rect.utility';
 import { CollisionEvent } from '../types';
 import { shouldConsiderTimeOfCollision, willMovingBodyPenetrateCollisionBody } from './utility';
+import { intersects } from '../collision-detection/collision-detection';
 
 export const getCollisionEvent = (movingBody: Body, worldBodies: Body[]): CollisionEvent | null => {
     return worldBodies.reduce<CollisionEvent | null>((acc, collisionBody) => {
         if (movingBody === collisionBody) return acc;
+
+        if (intersects(movingBody.shape, collisionBody.shape)) return acc;
 
         if (movingBody instanceof CircleBody) {
             if (collisionBody instanceof CircleBody) {
