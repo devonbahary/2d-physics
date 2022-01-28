@@ -4,6 +4,7 @@ import { intersects } from './collisions/collision-detection/collision-detection
 import {
     getCollisionResolvedVelocities,
     getFixedCollisionResolvedVelocity,
+    getTangentialMovementVector,
 } from './collisions/collision-resolver.utility';
 import { getCollisionEvent } from './collisions/continuous-collision-detection/continuous-collision-detection';
 import { Vector } from './Vector';
@@ -65,10 +66,33 @@ export class World {
                 const [resolvedVelocityA, resolvedVelocityB] = getCollisionResolvedVelocities(collisionEvent);
                 body.setVelocity(resolvedVelocityA);
                 collisionBody.setVelocity(resolvedVelocityB);
+
+                this.resolveChainedBodyCollisions(collisionBody);
             }
         } else {
             body.progressMovement();
             if (!this.noFriction) body.applyFriction();
+        }
+    }
+
+    private resolveChainedBodyCollisions(collisionBody: Body): void {
+        const collisionEvent = getCollisionEvent(collisionBody, this.bodies);
+        
+        // "chained" bodies are the subsequent bodies in exact contact after a collision
+        if (!collisionEvent || collisionEvent.timeOfCollision !== 0) return;
+
+        if (collisionEvent.collisionBody.isFixed) {
+            // if a chain of bodies are halted by the last body in the chain coming into
+            // contact with a fixed body, slide that last body against the fixed body
+            // by the pressure of the chained bodies
+            const tangentialMovementVector = getTangentialMovementVector({
+                ...collisionEvent,
+                timeOfCollision: 0,
+            });
+            
+            collisionBody.setVelocity(tangentialMovementVector);
+        } else {
+            this.resolveChainedBodyCollisions(collisionEvent.collisionBody);
         }
     }
 
