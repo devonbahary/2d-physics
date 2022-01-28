@@ -104,7 +104,7 @@ export abstract class BaseBody {
 
     applyFriction(): void {
         if (!this.isMoving()) return;
-        
+
         // slow down body until a minimum stopping speed is reached
         const magAfterFriction = Vector.magnitude(this._velocity) * 0.8;
         const finalMag = magAfterFriction < MIN_VELOCITY_MAG ? 0 : magAfterFriction;

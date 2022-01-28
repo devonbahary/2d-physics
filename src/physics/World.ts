@@ -77,7 +77,7 @@ export class World {
 
     private resolveChainedBodyCollisions(collisionBody: Body): void {
         const collisionEvent = getCollisionEvent(collisionBody, this.bodies);
-        
+
         // "chained" bodies are the subsequent bodies in exact contact after a collision
         if (!collisionEvent || collisionEvent.timeOfCollision !== 0) return;
 
@@ -89,7 +89,7 @@ export class World {
                 ...collisionEvent,
                 timeOfCollision: 0,
             });
-            
+
             collisionBody.setVelocity(tangentialMovementVector);
         } else {
             this.resolveChainedBodyCollisions(collisionEvent.collisionBody);

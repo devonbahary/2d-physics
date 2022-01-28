@@ -4,4 +4,3 @@ export enum Axis {
 }
 
 export type TimeOfCollision = number | null;
-

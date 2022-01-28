@@ -1,14 +1,7 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { Body } from 'src/physics/bodies/types';
 import { getCollisionEvent } from 'src/physics/collisions/continuous-collision-detection/continuous-collision-detection';
-import {
-    isCircleVsCircleCollisionEvent,
-    isCircleVsRectCollisionEvent,
-    isRectVsCircleCollisionEvent,
-    isRectVsRectCollisionEvent,
-} from 'src/physics/collisions/collision-event.utility';
 import { CollisionEvent } from 'src/physics/collisions/types';
-import { ErrorMessage } from 'src/physics/constants';
 import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
 import { gamePosToPhysicsPos } from './utilities';
@@ -35,14 +28,14 @@ export class GameEntity {
 
     private moveTangentiallyOfCollisionBody(collisionEvent: CollisionEvent): void {
         const { timeOfCollision } = collisionEvent;
-        
+
         this.body.progressMovement(timeOfCollision);
 
         const tangentialMovementVector = getTangentialMovementVector({
             ...collisionEvent,
             timeOfCollision: 0,
         });
-        
+
         this.body.setVelocity(tangentialMovementVector);
     }
 }
