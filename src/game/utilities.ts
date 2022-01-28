@@ -4,7 +4,7 @@ import { Body } from 'src/physics/bodies/types';
 import { ErrorMessage } from 'src/physics/constants';
 import { Vector } from 'src/physics/Vector';
 
-export const gamePosToPhysicsPos = (pos: Vector, body: Body): Vector => {
+export const gamePosToWorldPos = (pos: Vector, body: Body): Vector => {
     if (body instanceof CircleBody) {
         return new Vector(pos.x * 24 + body.radius, pos.y * 24 + body.radius);
     } else if (body instanceof RectBody) {
@@ -14,7 +14,7 @@ export const gamePosToPhysicsPos = (pos: Vector, body: Body): Vector => {
     throw new Error(ErrorMessage.unexpectedBodyType);
 };
 
-export const physicsPosToScreenPos = (body: Body): Vector => {
+export const gamePosToSpritePos = (body: Body): Vector => {
     if (body instanceof CircleBody) {
         return new Vector(body.pos.x - body.radius, body.pos.y - body.radius);
     } else if (body instanceof RectBody) {

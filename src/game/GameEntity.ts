@@ -4,7 +4,7 @@ import { getCollisionEvent } from 'src/physics/collisions/continuous-collision-d
 import { CollisionEvent } from 'src/physics/collisions/types';
 import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
-import { gamePosToPhysicsPos } from './utilities';
+import { gamePosToWorldPos } from './utilities';
 import { getTangentialMovementVector } from 'src/physics/collisions/collision-resolver.utility';
 
 export class GameEntity {
@@ -12,10 +12,9 @@ export class GameEntity {
 
     constructor(private world: World, public body: Body = new CircleBody()) {}
 
-    // accepts game coordinates
-    moveTo(pos: Vector): void {
-        const translatedPos = gamePosToPhysicsPos(pos, this.body);
-        this.body.moveTo(translatedPos);
+    moveTo(gamePos: Vector): void {
+        const pos = gamePosToWorldPos(gamePos, this.body);
+        this.body.moveTo(pos);
     }
 
     move(dir: Vector): void {
