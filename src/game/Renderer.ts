@@ -9,7 +9,7 @@ import './styles.css';
 type Body = CircleBody | RectBody;
 
 export class Renderer {
-    private worldElement: HTMLElement;
+    public worldElement: HTMLElement;
     private sprites: Sprite[] = [];
 
     constructor(private world: World, player: Body) {

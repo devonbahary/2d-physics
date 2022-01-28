@@ -1,7 +1,7 @@
-import { RectBody } from "src/physics/bodies/RectBody";
-import { quadratic, roundForFloatingPoint } from "src/physics/math/math.utilities";
-import { Vector } from "src/physics/Vector";
-import { TimeOfCollision } from "./types";
+import { RectBody } from 'src/physics/bodies/RectBody';
+import { quadratic, roundForFloatingPoint } from 'src/physics/math/math.utilities';
+import { Vector } from 'src/physics/Vector';
+import { TimeOfCollision } from './types';
 
 export const getClosestTimeOfCollision = (roots: number[]): TimeOfCollision => {
     return roots.reduce((acc, root) => {

@@ -3,7 +3,13 @@ import { RectBody } from 'src/physics/bodies/RectBody';
 import { Vector } from 'src/physics/Vector';
 import { RectVsCircleCollisionEvent } from '../../types';
 import { Axis, RectVsCirclePossibleCollision, TimeOfCollision } from '../types';
-import { getRectCorners, getTimeOfAxisAlignedCollision, getTimeOfCircleVsPointCollision, shouldConsiderTimeOfCollision, willMovingBodyPenetrateCollisionBody } from '../utility';
+import {
+    getRectCorners,
+    getTimeOfAxisAlignedCollision,
+    getTimeOfCircleVsPointCollision,
+    shouldConsiderTimeOfCollision,
+    willMovingBodyPenetrateCollisionBody,
+} from '../utility';
 
 export const getRectVsCircleCollisionEvent = (
     movingBody: RectBody,

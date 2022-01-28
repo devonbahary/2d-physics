@@ -7,7 +7,7 @@ type RectBodyArgs = Omit<BaseBodyArgs, 'shape'> & {
 };
 
 export class RectBody extends BaseBody {
-    protected shape: Rect;
+    public shape: Rect;
 
     constructor({ width, height, ...rest }: RectBodyArgs = {}) {
         super({

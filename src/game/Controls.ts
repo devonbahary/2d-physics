@@ -1,5 +1,10 @@
+import { Circle } from 'src/physics/bodies/shapes/Circle';
+import { Rect } from 'src/physics/bodies/shapes/Rect';
+import { Shape } from 'src/physics/bodies/types';
 import { Vector } from 'src/physics/Vector';
+import { World } from 'src/physics/World';
 import { GameEntity } from './GameEntity';
+import { Renderer } from './Renderer';
 
 enum DirectionKey {
     ArrowUp = 'ArrowUp',
@@ -11,7 +16,7 @@ enum DirectionKey {
 export class Controls {
     private keyMem = new Set<string>();
 
-    constructor(private player: GameEntity) {
+    constructor(private world: World, private player: GameEntity, private renderer: Renderer) {
         this.initKeyBindings();
     }
 
@@ -49,6 +54,10 @@ export class Controls {
                 }
             }
         });
+
+        this.renderer.worldElement.addEventListener('click', (e: PointerEvent) => {
+            this.createCircleForce(e);
+        });
     }
 
     isPressed(key: string): boolean {
@@ -73,6 +82,31 @@ export class Controls {
 
         if (Vector.magnitude(movement)) {
             this.player.move(movement);
+        }
+    }
+
+    private createCircleForce(e: PointerEvent): void {
+        const shape = new Circle(24);
+        this.createForceForShape(e, shape);
+    }
+
+    private createRectForce(e: PointerEvent): void {
+        const shape = new Rect(24, 24);
+        this.createForceForShape(e, shape);
+    }
+
+    private createForceForShape(e: PointerEvent, shape: Shape): void {
+        const worldX = e.x - this.renderer.worldElement.offsetLeft;
+        const worldY = e.y - this.renderer.worldElement.offsetTop;
+
+        shape.moveTo(new Vector(worldX, worldY));
+
+        const bodiesInRange = this.world.getBodiesIntersectingShape(shape);
+
+        for (const body of bodiesInRange) {
+            const forceDirection = Vector.subtract(body.pos, shape.pos);
+            const force = Vector.rescale(forceDirection, 1);
+            body.applyForce(force);
         }
     }
 }

@@ -16,7 +16,7 @@ export abstract class BaseBody {
     public id = uuid();
     public name: string;
     public elasticity = 1; // 0 - 1
-    protected shape: Circle | Rect;
+    public shape: Circle | Rect;
     private _velocity = new Vector();
     private _isFixed = false;
 

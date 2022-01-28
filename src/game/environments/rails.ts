@@ -29,6 +29,7 @@ export const setupRails = (): [World, GameEntity] => {
     world.addBody(player.body);
 
     const gameEntity = new GameEntity(world, new RectBody({ elasticity: 1 }));
+    gameEntity.body.name = 'rect';
     world.addBody(gameEntity.body);
     gameEntity.moveTo(new Vector(3, 2));
 

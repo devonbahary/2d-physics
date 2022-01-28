@@ -18,6 +18,10 @@ export class Rect {
         return this.point.y;
     }
 
+    get pos(): Vector {
+        return new Vector(this.x, this.y);
+    }
+
     get x0(): number {
         return this.point.x - this.width / 2;
     }

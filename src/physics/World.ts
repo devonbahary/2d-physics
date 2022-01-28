@@ -1,10 +1,10 @@
 import { RectBody } from './bodies/RectBody';
-import { Body } from './bodies/types';
+import { Body, Shape } from './bodies/types';
 import {
     getCollisionResolvedVelocities,
     getFixedCollisionResolvedVelocity,
 } from './collisions/collision-resolver.utility';
-import { getCollisionEvent } from './collisions/collision-detection/collision-detection.utility';
+import { intersects, getCollisionEvent } from './collisions/collision-detection/collision-detection.utility';
 import { Vector } from './Vector';
 
 type WorldArgs = {
@@ -32,6 +32,13 @@ export class World {
 
     update(): void {
         this.updateBodies();
+    }
+
+    getBodiesIntersectingShape(shape: Shape): Body[] {
+        return this.bodies.reduce<Body[]>((acc, body) => {
+            if (intersects(shape, body.shape)) acc.push(body);
+            return acc;
+        }, []);
     }
 
     private updateBodies(): void {

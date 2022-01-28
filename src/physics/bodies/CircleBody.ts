@@ -6,7 +6,7 @@ type CircleBodyArgs = Omit<BaseBodyArgs, 'shape'> & {
 };
 
 export class CircleBody extends BaseBody {
-    protected shape: Circle;
+    public shape: Circle;
 
     constructor({ radius, ...rest }: CircleBodyArgs = {}) {
         super({
