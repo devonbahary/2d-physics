@@ -15,15 +15,15 @@ export abstract class BaseBody {
     public mass = 1;
     public id = uuid();
     public name: string;
-    public elasticity = 1; // 0 - 1
     public shape: Circle | Rect;
     private _velocity = new Vector();
     private _isFixed = false;
+    private _elasticity = 1; // 0 - 1
 
     constructor({ elasticity = 0.5, name = '', shape }: BaseBodyArgs) {
-        this.elasticity = elasticity;
         this.name = name;
         this.shape = shape;
+        this.setElasticity(elasticity);
     }
 
     get x(): number {
@@ -70,6 +70,10 @@ export abstract class BaseBody {
         return this._isFixed;
     }
 
+    get elasticity(): number {
+        return this._elasticity;
+    }
+
     applyForce(force: Vector): void {
         if (this.isFixed) return; // fixed bodies can be subject to force, but nothing happens
         this._velocity = Vector.add(this._velocity, Vector.divide(force, this.mass));
@@ -83,6 +87,11 @@ export abstract class BaseBody {
     setFixed(isFixed: boolean): void {
         this._isFixed = isFixed;
         if (isFixed) this._velocity = new Vector(); // fixed bodies cannot move
+    }
+
+    setElasticity(elasticity: number): void {
+        if (elasticity < 0 || elasticity > 1) throw new Error('elasticity can only be 0-1');
+        this._elasticity = elasticity;
     }
 
     moveTo(pos: Vector): void {
