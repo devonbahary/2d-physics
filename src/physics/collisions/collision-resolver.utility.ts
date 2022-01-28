@@ -1,7 +1,7 @@
 import { Body } from '../bodies/types';
 import { ErrorMessage } from '../constants';
 import { Vector } from '../Vector';
-import { CollisionEvent } from './types';
+import { AdjacentCollisionEvent, CollisionEvent } from './types';
 import {
     isCircleVsCircleCollisionEvent,
     isCircleVsRectCollisionEvent,
@@ -131,4 +131,38 @@ const adjustForElasticity = (vector: Vector, collisionEvent: CollisionEvent): Ve
 const getCoefficientOfRestitution = (collisionEvent: CollisionEvent): number => {
     const { movingBody, collisionBody } = collisionEvent;
     return Math.min(movingBody.elasticity, collisionBody.elasticity);
+};
+
+export const getTangentialMovementVector = (collisionEvent: AdjacentCollisionEvent): Vector => {
+    if (isCircleVsCircleCollisionEvent(collisionEvent)) {
+        const { movingBody, collisionBody } = collisionEvent;
+
+        const diffPos = Vector.subtract(collisionBody.pos, movingBody.pos);
+        const tangentOfContact = Vector.normal(diffPos);
+
+        return Vector.proj(movingBody.velocity, tangentOfContact);
+    } else if (isCircleVsRectCollisionEvent(collisionEvent)) {
+        const { movingBody, pointOfContact } = collisionEvent;
+
+        const diffPos = Vector.subtract(pointOfContact, movingBody.pos);
+        const tangentOfContact = Vector.normal(diffPos);
+
+        return Vector.proj(movingBody.velocity, tangentOfContact);
+    } else if (isRectVsCircleCollisionEvent(collisionEvent)) {
+        const { movingBody, collisionBody, pointOfContact } = collisionEvent;
+
+        const diffPos = Vector.subtract(collisionBody.pos, pointOfContact);
+        const tangentOfContact = Vector.normal(diffPos);
+
+        return Vector.proj(movingBody.velocity, tangentOfContact);
+    } else if (isRectVsRectCollisionEvent(collisionEvent)) {
+        const { movingBody, pointOfContact } = collisionEvent;
+
+        const diffPos = Vector.subtract(pointOfContact, movingBody.pos);
+        const tangentOfContact = Vector.normal(diffPos);
+
+        return Vector.proj(movingBody.velocity, tangentOfContact);
+    }
+
+    throw new Error(ErrorMessage.unexpectedBodyType);
 };

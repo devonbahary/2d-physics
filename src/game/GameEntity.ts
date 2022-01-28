@@ -12,6 +12,7 @@ import { ErrorMessage } from 'src/physics/constants';
 import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
 import { gamePosToPhysicsPos } from './utilities';
+import { getTangentialMovementVector } from 'src/physics/collisions/collision-resolver.utility';
 
 export class GameEntity {
     public speed = 1;
@@ -29,56 +30,19 @@ export class GameEntity {
         this.body.setVelocity(movement);
 
         const collisionEvent = getCollisionEvent(this.body, this.world.bodies);
-        if (collisionEvent?.collisionBody.isFixed) this.slideAroundBody(collisionEvent);
+        if (collisionEvent?.collisionBody.isFixed) this.moveTangentiallyOfCollisionBody(collisionEvent);
     }
 
-    private slideAroundBody(collisionEvent: CollisionEvent): void {
-        if (isCircleVsCircleCollisionEvent(collisionEvent)) {
-            const { collisionBody, timeOfCollision } = collisionEvent;
+    private moveTangentiallyOfCollisionBody(collisionEvent: CollisionEvent): void {
+        const { timeOfCollision } = collisionEvent;
+        
+        this.body.progressMovement(timeOfCollision);
 
-            this.body.progressMovement(timeOfCollision);
-            const diffPos = Vector.subtract(collisionBody.pos, this.body.pos);
-            const tangentOfContact = Vector.normal(diffPos);
-
-            const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
-            this.body.setVelocity(slideVector);
-
-            return;
-        } else if (isCircleVsRectCollisionEvent(collisionEvent)) {
-            const { timeOfCollision, pointOfContact } = collisionEvent;
-
-            this.body.progressMovement(timeOfCollision);
-            const diffPos = Vector.subtract(pointOfContact, this.body.pos);
-            const tangentOfContact = Vector.normal(diffPos);
-
-            const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
-            this.body.setVelocity(slideVector);
-
-            return;
-        } else if (isRectVsCircleCollisionEvent(collisionEvent)) {
-            const { collisionBody, timeOfCollision, pointOfContact } = collisionEvent;
-
-            this.body.progressMovement(timeOfCollision);
-            const diffPos = Vector.subtract(collisionBody.pos, pointOfContact);
-            const tangentOfContact = Vector.normal(diffPos);
-
-            const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
-            this.body.setVelocity(slideVector);
-
-            return;
-        } else if (isRectVsRectCollisionEvent(collisionEvent)) {
-            const { movingBody, timeOfCollision, pointOfContact } = collisionEvent;
-
-            this.body.progressMovement(timeOfCollision);
-            const diffPos = Vector.subtract(pointOfContact, movingBody.pos);
-            const tangentOfContact = Vector.normal(diffPos);
-
-            const slideVector = Vector.proj(this.body.velocity, tangentOfContact);
-            this.body.setVelocity(slideVector);
-
-            return;
-        }
-
-        throw new Error(ErrorMessage.unexpectedBodyType);
+        const tangentialMovementVector = getTangentialMovementVector({
+            ...collisionEvent,
+            timeOfCollision: 0,
+        });
+        
+        this.body.setVelocity(tangentialMovementVector);
     }
 }

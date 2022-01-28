@@ -1,3 +1,4 @@
+import { Body } from '../bodies/types';
 import { CircleBody } from '../bodies/CircleBody';
 import { RectBody } from '../bodies/RectBody';
 import { Vector } from '../Vector';
@@ -29,8 +30,15 @@ export type RectVsRectCollisionEvent = {
     pointOfContact: Vector;
 };
 
+export type AdjacentCollisionEvent = {
+    movingBody: Body;
+    collisionBody: Body;
+    timeOfCollision: 0;
+};
+
 export type CollisionEvent =
     | CircleVsCircleCollisionEvent
     | CircleVsRectCollisionEvent
     | RectVsCircleCollisionEvent
-    | RectVsRectCollisionEvent;
+    | RectVsRectCollisionEvent
+    | AdjacentCollisionEvent;
