@@ -34,15 +34,15 @@ const doCircleAndRectOverlap = (circle: Circle, rect: Rect): boolean => {
     const dx = Math.abs(circle.x - rect.x);
     const dy = Math.abs(circle.y - rect.y);
 
-    if (dx > rect.width / 2 + circle.radius) return false;
-    if (dy > rect.height / 2 + circle.radius) return false;
+    if (dx >= rect.width / 2 + circle.radius) return false;
+    if (dy >= rect.height / 2 + circle.radius) return false;
 
-    if (dx <= rect.width / 2) return true;
-    if (dy <= rect.height / 2) return true;
+    if (dx < rect.width / 2) return true;
+    if (dy < rect.height / 2) return true;
 
     const cornerDistance = (dx - rect.width / 2) ** 2 + (dy - rect.height / 2) ** 2;
 
-    return cornerDistance <= circle.radius ** 2;
+    return cornerDistance < circle.radius ** 2;
 };
 
 const doRectsOverlap = (rectA: Rect, rectB: Rect): boolean => {
