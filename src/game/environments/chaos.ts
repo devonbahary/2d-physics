@@ -43,7 +43,7 @@ export const setupChaos = (): [World, GameEntity] => {
         );
 
         if (rand()) {
-            body.setFixed(true);
+            body.setFixed();
         } else {
             gameEntity.move(new Vector(Math.random(), Math.random()));
         }

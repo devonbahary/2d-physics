@@ -30,14 +30,14 @@ export const setupEnvironmentA = (): [World, GameEntity] => {
 
     const fixedCircle = new GameEntity(world);
     fixedCircle.body.name = 'fixed-circle';
-    fixedCircle.body.setFixed(true);
+    fixedCircle.body.setFixed();
 
     const rect = new GameEntity(world, new RectBody());
     rect.body.name = 'rect';
 
     const fixedRect = new GameEntity(world, new RectBody());
     fixedRect.body.name = 'fixed-rect';
-    fixedRect.body.setFixed(true);
+    fixedRect.body.setFixed();
 
     circle.moveTo(new Vector(4, 2));
     rect.moveTo(new Vector(2, 2));

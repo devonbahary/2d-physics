@@ -84,7 +84,7 @@ export abstract class BaseBody {
         this._velocity = vel;
     }
 
-    setFixed(isFixed: boolean): void {
+    setFixed(isFixed = true): void {
         this._isFixed = isFixed;
         if (isFixed) this._velocity = new Vector(); // fixed bodies cannot move
     }

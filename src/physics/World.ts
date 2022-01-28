@@ -90,7 +90,7 @@ export class World {
         leftBoundary.moveTo(new Vector(-1, height / 2));
 
         for (const boundary of [topBoundary, rightBoundary, bottomBoundary, leftBoundary]) {
-            boundary.setFixed(true);
+            boundary.setFixed();
             this.addBody(boundary);
         }
     }
