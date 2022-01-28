@@ -27,7 +27,7 @@ export const intersects = (shapeA: Shape, shapeB: Shape): boolean => {
 
 const doCirclesOverlap = (circleA: Circle, circleB: Circle): boolean => {
     const diffPos = Vector.subtract(circleB.pos, circleA.pos);
-    return Vector.magnitude(diffPos) < circleA.radius + circleB.radius;
+    return roundForFloatingPoint(Vector.magnitude(diffPos)) < circleA.radius + circleB.radius;
 };
 
 // https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
