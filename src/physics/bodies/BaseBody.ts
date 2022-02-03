@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { Collidable } from '../collisions/collidable';
 import { Vector } from '../Vector';
 import { Circle } from './shapes/Circle';
 import { Rect } from './shapes/Rect';
@@ -16,6 +17,7 @@ export abstract class BaseBody {
     public id = uuid();
     public name: string;
     public shape: Circle | Rect;
+    public collisions = new Collidable();
     private _velocity = new Vector();
     private _isFixed = false;
     private _elasticity = 1; // 0 - 1

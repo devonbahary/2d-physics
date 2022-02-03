@@ -6,11 +6,17 @@ import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
 import { gamePosToWorldPos } from './utilities';
 import { getTangentialMovementVector } from 'src/physics/collisions/collision-resolver.utility';
+import { Collidable } from 'src/physics/collisions/collidable';
 
 export class GameEntity {
     public speed = 1;
+    public collisions = new Collidable();
 
-    constructor(private world: World, public body: Body = new CircleBody()) {}
+    constructor(private world: World, public body: Body = new CircleBody()) {
+        this.body.collisions.addCollisionCallback((collisionEvent) => {
+            this.collisions.onCollision(collisionEvent);
+        });
+    }
 
     moveTo(gamePos: Vector): void {
         const pos = gamePosToWorldPos(gamePos, this.body);

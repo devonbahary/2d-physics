@@ -8,6 +8,7 @@ import {
 } from './collisions/collision-resolver.utility';
 import { getCollisionEvent } from './collisions/continuous-collision-detection/continuous-collision-detection';
 import { QuadTree, QuadTreeOptions } from './collisions/quad-tree/QuadTree';
+import { CollisionEvent } from './collisions/types';
 import { Vector } from './Vector';
 
 type WorldOptions = {
@@ -98,6 +99,8 @@ export class World {
 
                 this.resolveChainedBodyCollisions(collisionBody);
             }
+
+            this.onCollisionEvent(collisionEvent);
         } else {
             body.progressMovement();
             if (!this.options.noFriction) body.applyFriction();
@@ -136,6 +139,14 @@ export class World {
             resolvedBodyIdSet.add(collisionBody.id);
             this.resolveChainedBodyCollisions(collisionEvent.collisionBody, resolvedBodyIdSet);
         }
+
+        this.onCollisionEvent(collisionEvent);
+    }
+
+    private onCollisionEvent(collisionEvent: CollisionEvent): void {
+        const { movingBody, collisionBody } = collisionEvent;
+        movingBody.collisions.onCollision(collisionEvent);
+        collisionBody.collisions.onCollision(collisionEvent);
     }
 
     private initBoundaries(): void {
