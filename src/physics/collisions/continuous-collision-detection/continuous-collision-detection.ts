@@ -10,10 +10,10 @@ import { CollisionEvent } from '../types';
 import { shouldConsiderTimeOfCollision, willMovingBodyPenetrateCollisionBody } from './utility';
 import { intersects } from '../collision-detection/collision-detection';
 
-export const getCollisionEvent = (movingBody: Body, worldBodies: Body[]): CollisionEvent | null => {
+export const getCollisionEvent = (movingBody: Body, otherBodies: Body[]): CollisionEvent | null => {
     if (!movingBody.isMoving()) return null;
 
-    return worldBodies.reduce<CollisionEvent | null>((acc, collisionBody) => {
+    return otherBodies.reduce<CollisionEvent | null>((acc, collisionBody) => {
         if (movingBody === collisionBody) return acc;
 
         if (intersects(movingBody.shape, collisionBody.shape)) return acc;
