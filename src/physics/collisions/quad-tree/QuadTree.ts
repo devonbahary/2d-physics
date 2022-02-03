@@ -92,7 +92,7 @@ class InnerNode extends Node {
 
     constructor(public rect: Rect, options: Required<QuadTreeOptions>) {
         super(rect, options);
-        this.initChildren();
+        this.children = this.getChildren();
     }
 
     get leaves(): Leaf[] {
@@ -175,7 +175,7 @@ class InnerNode extends Node {
         return leaf;
     }
 
-    private initChildren(): void {
+    private getChildren(): Leaf[] {
         const { x0, y0, width, height } = this.rect;
 
         const childWidth = width / 2;
@@ -213,7 +213,7 @@ class InnerNode extends Node {
             }),
         ];
 
-        this.children = childRects.map((rect) => new Leaf(rect, this.options));
+        return childRects.map((rect) => new Leaf(rect, this.options));
     }
 }
 

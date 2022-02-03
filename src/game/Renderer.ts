@@ -37,8 +37,13 @@ export class Renderer {
     private options: Required<RendererOptions>;
 
     constructor(private world: World, player: GameEntity, options: Partial<RendererOptions> = {}) {
-        this.initWorldElement();
-        this.initFPSElement();
+        this.worldElement = this.createWorldElement();
+        document.body.appendChild(this.worldElement);
+        this.initTileGrid();
+
+        this.fpsElement = this.createFPSElement();
+        document.body.appendChild(this.fpsElement);
+
         this.addSpriteForPlayer(player);
 
         this.options = {
@@ -107,25 +112,19 @@ export class Renderer {
         this.worldElement.removeChild(leafSprite.element);
     };
 
-    private initWorldElement(): void {
+    private createWorldElement(): HTMLElement {
         const worldElement = document.createElement('div');
         worldElement.id = 'world';
         worldElement.style.width = `${this.world.width}px`;
         worldElement.style.height = `${this.world.height}px`;
-
-        this.worldElement = worldElement;
-        document.body.appendChild(this.worldElement);
-
-        this.initTileGrid();
+        return worldElement;
     }
 
-    private initFPSElement(): void {
+    private createFPSElement(): HTMLElement {
         const fpsElement = document.createElement('div');
         fpsElement.id = 'fps';
         fpsElement.innerText = 'FPS:';
-
-        this.fpsElement = fpsElement;
-        document.body.appendChild(this.fpsElement);
+        return fpsElement;
     }
 
     private updateFPSTracking(): void {

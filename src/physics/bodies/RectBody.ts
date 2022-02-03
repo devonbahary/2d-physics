@@ -5,7 +5,7 @@ import { Dimensions } from './types';
 type RectBodyArgs = Omit<BaseBodyArgs, 'shape'> & Partial<Dimensions>;
 
 export class RectBody extends BaseBody {
-    public shape: Rect;
+    declare shape: Rect;
 
     constructor({ width, height, ...rest }: RectBodyArgs = {}) {
         super({
