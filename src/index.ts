@@ -5,7 +5,7 @@ import { setupRails } from './game/environments/rails';
 import { setupEnvironmentA } from './game/environments/environmentA';
 import { setupLargeEnvironment } from './game/environments/large-environment';
 
-const { world, player, rendererOptions } = setupLargeEnvironment();
+const { world, player, rendererOptions } = setupRails();
 
 const renderer = new Renderer(world, player, rendererOptions);
 const controls = new Controls(world, player, renderer);
