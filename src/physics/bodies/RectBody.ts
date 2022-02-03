@@ -1,17 +1,15 @@
 import { BaseBody, BaseBodyArgs } from './BaseBody';
 import { Rect } from './shapes/Rect';
+import { Dimensions } from './types';
 
-type RectBodyArgs = Omit<BaseBodyArgs, 'shape'> & {
-    width?: number;
-    height?: number;
-};
+type RectBodyArgs = Omit<BaseBodyArgs, 'shape'> & Partial<Dimensions>;
 
 export class RectBody extends BaseBody {
     public shape: Rect;
 
     constructor({ width, height, ...rest }: RectBodyArgs = {}) {
         super({
-            shape: new Rect(width, height),
+            shape: new Rect({ width, height }),
             ...rest,
         });
     }

@@ -4,24 +4,21 @@ import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
 import { GameEntity } from '../GameEntity';
 import { scaleToPhysicsLength } from '../utilities';
+import { EnvironmentGenerator } from './types';
 
-const settings = {
-    world: {
-        tileWidth: 7,
-        tileHeight: 7,
-    },
-};
+const TILE_WIDTH = 7;
+const TILE_HEIGHT = 7;
 
-export const setupEnvironmentA = (): [World, GameEntity] => {
+export const setupEnvironmentA: EnvironmentGenerator = () => {
     const world = new World({
-        width: scaleToPhysicsLength(settings.world.tileWidth),
-        height: scaleToPhysicsLength(settings.world.tileHeight),
+        width: scaleToPhysicsLength(TILE_WIDTH),
+        height: scaleToPhysicsLength(TILE_HEIGHT),
     });
 
     const player = new GameEntity(world, new CircleBody());
     player.body.name = 'player';
 
-    player.moveTo(new Vector(Math.floor(settings.world.tileWidth / 2), Math.floor(settings.world.tileHeight / 2)));
+    player.moveTo(new Vector(Math.floor(TILE_WIDTH / 2), Math.floor(TILE_HEIGHT / 2)));
 
     world.addBody(player.body);
 
@@ -49,5 +46,5 @@ export const setupEnvironmentA = (): [World, GameEntity] => {
     world.addBody(fixedCircle.body);
     world.addBody(fixedRect.body);
 
-    return [world, player];
+    return { world, player };
 };

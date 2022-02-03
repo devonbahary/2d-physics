@@ -91,7 +91,7 @@ export class Controls {
     }
 
     private createRectForce(e: PointerEvent): void {
-        const shape = new Rect(24, 24);
+        const shape = new Rect();
         this.createForceForShape(e, shape);
     }
 

@@ -1,13 +1,21 @@
 import { Vector } from 'src/physics/Vector';
 import { Point } from '../Point';
+import { Dimensions } from '../types';
+
+type RectArgs = Partial<Dimensions> & {
+    x0?: number;
+    y0?: number;
+};
 
 export class Rect {
     private point: Point;
+    public width: number;
+    public height: number;
 
-    constructor(public width = 24, public height = 24) {
-        this.point = new Point();
-        const newPositionCenter = new Vector(this.width / 2, this.height / 2);
-        this.moveTo(newPositionCenter);
+    constructor({ x0 = 0, y0 = 0, height = 24, width = 24 }: RectArgs = {}) {
+        this.width = width;
+        this.height = height;
+        this.point = new Point(x0 + width / 2, y0 + height / 2);
     }
 
     get x(): number {

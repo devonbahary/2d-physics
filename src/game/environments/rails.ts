@@ -5,26 +5,24 @@ import { World } from 'src/physics/World';
 import { GameEntity } from '../GameEntity';
 import { scaleToPhysicsLength } from '../utilities';
 
-const settings = {
-    world: {
-        tileWidth: 5,
-        tileHeight: 5,
-        noFriction: true,
-    },
-};
+const TILE_WIDTH = 5;
+const TILE_HEIGHT = 5;
+const NO_FRICTION = true;
 
 export const setupRails = (): [World, GameEntity] => {
     const world = new World({
-        width: scaleToPhysicsLength(settings.world.tileWidth),
-        height: scaleToPhysicsLength(settings.world.tileHeight),
-        noFriction: settings.world.noFriction,
+        width: scaleToPhysicsLength(TILE_WIDTH),
+        height: scaleToPhysicsLength(TILE_HEIGHT),
+        options: {
+            noFriction: NO_FRICTION,
+        },
     });
 
     const player = new GameEntity(world, new CircleBody({ elasticity: 1 }));
     player.speed = 2;
     player.body.name = 'player';
 
-    player.moveTo(new Vector(1, Math.floor(settings.world.tileHeight / 2)));
+    player.moveTo(new Vector(1, Math.floor(TILE_HEIGHT / 2)));
 
     world.addBody(player.body);
 

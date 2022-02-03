@@ -6,22 +6,30 @@ import { GameEntity } from '../GameEntity';
 import { scaleToPhysicsLength } from '../utilities';
 import { EnvironmentGenerator } from './types';
 
-const TILE_WIDTH = 7;
-const TILE_HEIGHT = 7;
+const TILE_WIDTH = 50;
+const TILE_HEIGHT = 50;
 const NO_FRICTION = true;
 
-const NUM_CHARACTERS = 10;
+const NUM_CHARACTERS = 500;
 
 const rand = (): boolean => Boolean(Math.round(Math.random()));
 
-export const setupChaos: EnvironmentGenerator = () => {
+export const setupLargeEnvironment: EnvironmentGenerator = () => {
     const world = new World({
         width: scaleToPhysicsLength(TILE_WIDTH),
         height: scaleToPhysicsLength(TILE_HEIGHT),
         options: {
             noFriction: NO_FRICTION,
+            useQuadTree: true,
+        },
+        quadTreeOptions: {
+            maxBodiesInLeaf: 32,
         },
     });
+
+    const rendererOptions = {
+        renderQuadTree: true,
+    };
 
     const player = new GameEntity(world, new CircleBody({ elasticity: 1 }));
     player.body.name = 'player';
@@ -45,5 +53,5 @@ export const setupChaos: EnvironmentGenerator = () => {
         world.addBody(body);
     }
 
-    return { world, player };
+    return { world, player, rendererOptions };
 };

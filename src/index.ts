@@ -2,16 +2,22 @@ import { Controls } from './game/Controls';
 import { Renderer } from './game/Renderer';
 import { setupChaos } from './game/environments/chaos';
 import { setupRails } from './game/environments/rails';
+import { setupEnvironmentA } from './game/environments/environmentA';
+import { setupLargeEnvironment } from './game/environments/large-environment';
 
-const [world, player] = setupRails();
+const { world, player, rendererOptions } = setupLargeEnvironment();
 
-const renderer = new Renderer(world, player.body);
+const renderer = new Renderer(world, player, rendererOptions);
 const controls = new Controls(world, player, renderer);
 
-setInterval(() => {
+const run = (): void => {
     world.update();
     renderer.update();
     controls.update();
-}, 1000 / 60);
+
+    requestAnimationFrame(run);
+};
+
+requestAnimationFrame(run);
 
 console.log(world);
