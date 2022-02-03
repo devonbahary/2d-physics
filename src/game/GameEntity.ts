@@ -6,7 +6,7 @@ import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
 import { gamePosToWorldPos } from './utilities';
 import { getTangentialMovementVector } from 'src/physics/collisions/collision-resolver.utility';
-import { Collidable } from 'src/physics/collisions/collidable';
+import { Collidable } from 'src/physics/collisions/Collidable';
 
 export class GameEntity {
     public speed = 1;

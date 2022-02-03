@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { Collidable } from '../collisions/collidable';
+import { Collidable } from '../collisions/Collidable';
 import { Vector } from '../Vector';
 import { Circle } from './shapes/Circle';
 import { Rect } from './shapes/Rect';
