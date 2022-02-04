@@ -3,17 +3,17 @@ import { RectBody } from '../../bodies/RectBody';
 import { Body } from '../../bodies/types';
 import { ErrorMessage } from '../../constants';
 import { getClosestTimeOfCircleVsCircleCollision } from './collision-types/circle-vs-circle.utility';
-import { getCircleVsRectCollisionEvent } from './collision-types/circle-vs-rect.utility';
-import { getRectVsCircleCollisionEvent } from './collision-types/rect-vs-circle.utility';
-import { getRectVsRectCollisionEvent } from './collision-types/rect-vs-rect.utility';
-import { CollisionEvent } from '../types';
+import { getCircleVsRectCollision } from './collision-types/circle-vs-rect.utility';
+import { getRectVsCircleCollision } from './collision-types/rect-vs-circle.utility';
+import { getRectVsRectCollision } from './collision-types/rect-vs-rect.utility';
+import { Collision } from '../types';
 import { shouldConsiderTimeOfCollision, willMovingBodyPenetrateCollisionBody } from './utility';
 import { intersects } from '../collision-detection/collision-detection';
 
-export const getCollisionEvent = (movingBody: Body, otherBodies: Body[]): CollisionEvent | null => {
+export const getClosestCollision = (movingBody: Body, otherBodies: Body[]): Collision | null => {
     if (!movingBody.isMoving()) return null;
 
-    return otherBodies.reduce<CollisionEvent | null>((acc, collisionBody) => {
+    return otherBodies.reduce<Collision | null>((acc, collisionBody) => {
         if (movingBody === collisionBody) return acc;
 
         if (intersects(movingBody.shape, collisionBody.shape)) return acc;
@@ -41,16 +41,16 @@ export const getCollisionEvent = (movingBody: Body, otherBodies: Body[]): Collis
 
                 return acc;
             } else if (collisionBody instanceof RectBody) {
-                const collisionEvent = getCircleVsRectCollisionEvent(movingBody, collisionBody);
-                return isClosestCollisionEvent(collisionEvent, acc) ? collisionEvent : acc;
+                const collision = getCircleVsRectCollision(movingBody, collisionBody);
+                return isClosestCollision(collision, acc) ? collision : acc;
             }
         } else if (movingBody instanceof RectBody) {
             if (collisionBody instanceof CircleBody) {
-                const collisionEvent = getRectVsCircleCollisionEvent(movingBody, collisionBody);
-                return isClosestCollisionEvent(collisionEvent, acc) ? collisionEvent : acc;
+                const collision = getRectVsCircleCollision(movingBody, collisionBody);
+                return isClosestCollision(collision, acc) ? collision : acc;
             } else if (collisionBody instanceof RectBody) {
-                const collisionEvent = getRectVsRectCollisionEvent(movingBody, collisionBody);
-                return isClosestCollisionEvent(collisionEvent, acc) ? collisionEvent : acc;
+                const collision = getRectVsRectCollision(movingBody, collisionBody);
+                return isClosestCollision(collision, acc) ? collision : acc;
             }
         }
 
@@ -58,10 +58,10 @@ export const getCollisionEvent = (movingBody: Body, otherBodies: Body[]): Collis
     }, null);
 };
 
-const isClosestCollisionEvent = (
-    collisionEvent: CollisionEvent | null,
-    existingCollisionEvent: CollisionEvent | null,
+const isClosestCollision = (
+    collision: Collision | null,
+    existingCollision: Collision | null,
 ): boolean => {
-    if (!collisionEvent) return false;
-    return !existingCollisionEvent || existingCollisionEvent.timeOfCollision > collisionEvent.timeOfCollision;
+    if (!collision) return false;
+    return !existingCollision || existingCollision.timeOfCollision > collision.timeOfCollision;
 };

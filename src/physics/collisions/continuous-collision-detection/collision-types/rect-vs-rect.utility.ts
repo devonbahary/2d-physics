@@ -1,7 +1,7 @@
 import { RectBody } from 'src/physics/bodies/RectBody';
 import { getExactOverlap, hasOverlap } from 'src/physics/math/math.utilities';
 import { Vector } from 'src/physics/Vector';
-import { RectVsRectCollisionEvent } from '../../types';
+import { RectVsRectCollision } from '../../types';
 import { Axis } from '../types';
 import { getTimeOfAxisAlignedCollision, isPointMovingTowardsPoint, shouldConsiderTimeOfCollision } from '../utility';
 
@@ -11,11 +11,11 @@ type RectVsRectPossibleCollision = {
     axisOfCollision: Axis;
 };
 
-export const getRectVsRectCollisionEvent = (
+export const getRectVsRectCollision = (
     movingBody: RectBody,
     collisionBody: RectBody,
-): RectVsRectCollisionEvent | null => {
-    return getRectVsRectPossibleCollisions(movingBody, collisionBody).reduce<RectVsRectCollisionEvent | null>(
+): RectVsRectCollision | null => {
+    return getRectVsRectPossibleCollisions(movingBody, collisionBody).reduce<RectVsRectCollision | null>(
         (acc, possibleSideCollision) => {
             const { movingBoundary, collisionBoundary, axisOfCollision } = possibleSideCollision;
 

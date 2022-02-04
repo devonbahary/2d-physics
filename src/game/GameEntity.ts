@@ -1,7 +1,7 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { Body } from 'src/physics/bodies/types';
-import { getCollisionEvent } from 'src/physics/collisions/continuous-collision-detection/continuous-collision-detection';
-import { CollisionEvent } from 'src/physics/collisions/types';
+import { getClosestCollision } from 'src/physics/collisions/continuous-collision-detection/continuous-collision-detection';
+import { Collision } from 'src/physics/collisions/types';
 import { Vector } from 'src/physics/Vector';
 import { World } from 'src/physics/World';
 import { gamePosToWorldPos } from './utilities';
@@ -13,8 +13,8 @@ export class GameEntity {
     public collisions = new Collidable();
 
     constructor(private world: World, public body: Body = new CircleBody()) {
-        this.body.collisions.addCollisionCallback((collisionEvent) => {
-            this.collisions.onCollision(collisionEvent);
+        this.body.collisions.addCollisionEvent((collision) => {
+            this.collisions.onCollision(collision);
         });
     }
 
@@ -27,17 +27,17 @@ export class GameEntity {
         const movement = Vector.rescale(dir, this.speed);
         this.body.setVelocity(movement);
 
-        const collisionEvent = getCollisionEvent(this.body, this.world.bodies);
-        if (collisionEvent?.collisionBody.isFixed) this.moveTangentToCollisionBody(collisionEvent);
+        const collision = getClosestCollision(this.body, this.world.bodies);
+        if (collision?.collisionBody.isFixed) this.moveTangentToCollisionBody(collision);
     }
 
-    private moveTangentToCollisionBody(collisionEvent: CollisionEvent): void {
-        const { timeOfCollision } = collisionEvent;
+    private moveTangentToCollisionBody(collision: Collision): void {
+        const { timeOfCollision } = collision;
 
         this.body.progressMovement(timeOfCollision);
 
         const tangentialMovementVector = getTangentialMovementVector({
-            ...collisionEvent,
+            ...collision,
             timeOfCollision: 0,
         });
 

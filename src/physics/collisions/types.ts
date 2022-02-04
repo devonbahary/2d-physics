@@ -3,42 +3,42 @@ import { CircleBody } from '../bodies/CircleBody';
 import { RectBody } from '../bodies/RectBody';
 import { Vector } from '../Vector';
 
-export type CircleVsCircleCollisionEvent = {
+export type CircleVsCircleCollision = {
     movingBody: CircleBody;
     collisionBody: CircleBody;
     timeOfCollision: number;
 };
 
-export type CircleVsRectCollisionEvent = {
+export type CircleVsRectCollision = {
     movingBody: CircleBody;
     collisionBody: RectBody;
     timeOfCollision: number;
     pointOfContact: Vector;
 };
 
-export type RectVsCircleCollisionEvent = {
+export type RectVsCircleCollision = {
     movingBody: RectBody;
     collisionBody: CircleBody;
     timeOfCollision: number;
     pointOfContact: Vector;
 };
 
-export type RectVsRectCollisionEvent = {
+export type RectVsRectCollision = {
     movingBody: RectBody;
     collisionBody: RectBody;
     timeOfCollision: number;
     pointOfContact: Vector;
 };
 
-export type AdjacentCollisionEvent = {
+export type AdjacentCollision = {
     movingBody: Body;
     collisionBody: Body;
     timeOfCollision: 0;
 };
 
-export type CollisionEvent =
-    | CircleVsCircleCollisionEvent
-    | CircleVsRectCollisionEvent
-    | RectVsCircleCollisionEvent
-    | RectVsRectCollisionEvent
-    | AdjacentCollisionEvent;
+export type Collision =
+    | CircleVsCircleCollision
+    | CircleVsRectCollision
+    | RectVsCircleCollision
+    | RectVsRectCollision
+    | AdjacentCollision;

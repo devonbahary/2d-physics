@@ -1,39 +1,39 @@
 import { Body } from '../bodies/types';
 import { ErrorMessage } from '../constants';
 import { Vector } from '../Vector';
-import { AdjacentCollisionEvent, CollisionEvent } from './types';
+import { AdjacentCollision, Collision } from './types';
 import {
-    isCircleVsCircleCollisionEvent,
-    isCircleVsRectCollisionEvent,
-    isRectVsCircleCollisionEvent,
-    isRectVsRectCollisionEvent,
-} from './collision-event.utility';
+    isCircleVsCircleCollision,
+    isCircleVsRectCollision,
+    isRectVsCircleCollision,
+    isRectVsRectCollision,
+} from './collision.utility';
 
-export const getFixedCollisionResolvedVelocity = (collisionEvent: CollisionEvent): Vector => {
-    const finalVelocity = getFixedCollisionFinalVelocity(collisionEvent);
-    return adjustForElasticity(finalVelocity, collisionEvent);
+export const getFixedCollisionResolvedVelocity = (collision: Collision): Vector => {
+    const finalVelocity = getFixedCollisionFinalVelocity(collision);
+    return adjustForElasticity(finalVelocity, collision);
 };
 
-const getFixedCollisionFinalVelocity = (collisionEvent: CollisionEvent): Vector => {
-    const { movingBody, collisionBody } = collisionEvent;
+const getFixedCollisionFinalVelocity = (collision: Collision): Vector => {
+    const { movingBody, collisionBody } = collision;
 
-    if (isCircleVsCircleCollisionEvent(collisionEvent)) {
+    if (isCircleVsCircleCollision(collision)) {
         const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
         return Vector.rescale(diffPos, Vector.magnitude(movingBody.velocity));
     }
 
-    if (isCircleVsRectCollisionEvent(collisionEvent)) {
-        const { pointOfContact } = collisionEvent;
+    if (isCircleVsRectCollision(collision)) {
+        const { pointOfContact } = collision;
         return getBounceVectorOffFixedPoint(movingBody, pointOfContact);
     }
 
-    if (isRectVsCircleCollisionEvent(collisionEvent)) {
+    if (isRectVsCircleCollision(collision)) {
         const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
         return Vector.rescale(diffPos, Vector.magnitude(movingBody.velocity));
     }
 
-    if (isRectVsRectCollisionEvent(collisionEvent)) {
-        const { pointOfContact } = collisionEvent;
+    if (isRectVsRectCollision(collision)) {
+        const { pointOfContact } = collision;
         return getBounceVectorOffFixedPoint(movingBody, pointOfContact);
     }
 
@@ -51,36 +51,36 @@ const getBounceVectorOffFixedPoint = (movingBody: Body, point: Vector): Vector =
     return Vector.subtract(velocity, Vector.mult(proj, 2));
 };
 
-export const getCollisionResolvedVelocities = (collisionEvent: CollisionEvent): [Vector, Vector] => {
-    const [finalVelocityA, finalVelocityB] = getCollisionFinalVelocities(collisionEvent);
+export const getCollisionResolvedVelocities = (collision: Collision): [Vector, Vector] => {
+    const [finalVelocityA, finalVelocityB] = getCollisionFinalVelocities(collision);
 
-    return [adjustForElasticity(finalVelocityA, collisionEvent), adjustForElasticity(finalVelocityB, collisionEvent)];
+    return [adjustForElasticity(finalVelocityA, collision), adjustForElasticity(finalVelocityB, collision)];
 };
 
-const getCollisionFinalVelocities = (collisionEvent: CollisionEvent): [Vector, Vector] => {
-    const { movingBody, collisionBody } = collisionEvent;
+const getCollisionFinalVelocities = (collision: Collision): [Vector, Vector] => {
+    const { movingBody, collisionBody } = collision;
 
-    if (isCircleVsCircleCollisionEvent(collisionEvent)) {
+    if (isCircleVsCircleCollision(collision)) {
         const diffPos = Vector.subtract(movingBody.pos, collisionBody.pos);
         return getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPos);
     }
 
-    if (isCircleVsRectCollisionEvent(collisionEvent)) {
-        const { pointOfContact } = collisionEvent;
+    if (isCircleVsRectCollision(collision)) {
+        const { pointOfContact } = collision;
         const diffPosPointOfContact = Vector.subtract(movingBody.pos, pointOfContact);
 
         return getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPosPointOfContact);
     }
 
-    if (isRectVsCircleCollisionEvent(collisionEvent)) {
-        const { pointOfContact } = collisionEvent;
+    if (isRectVsCircleCollision(collision)) {
+        const { pointOfContact } = collision;
         const diffPosPointOfContact = Vector.subtract(pointOfContact, collisionBody.pos);
 
         return getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPosPointOfContact);
     }
 
-    if (isRectVsRectCollisionEvent(collisionEvent)) {
-        const { pointOfContact } = collisionEvent;
+    if (isRectVsRectCollision(collision)) {
+        const { pointOfContact } = collision;
         const diffPosPointOfContact = Vector.subtract(movingBody.pos, pointOfContact);
 
         return getElasticCollisionFinalVelocities(movingBody, collisionBody, diffPosPointOfContact);
@@ -123,40 +123,40 @@ const getElasticCollisionFinalVelocities = (bodyA: Body, bodyB: Body, diffPos: V
     return [Vector.roundForFloatingPoint(finalVelocityA), Vector.roundForFloatingPoint(finalVelocityB)];
 };
 
-const adjustForElasticity = (vector: Vector, collisionEvent: CollisionEvent): Vector => {
-    const cor = getCoefficientOfRestitution(collisionEvent);
+const adjustForElasticity = (vector: Vector, collision: Collision): Vector => {
+    const cor = getCoefficientOfRestitution(collision);
     return Vector.rescale(vector, Vector.magnitude(vector) * cor);
 };
 
-const getCoefficientOfRestitution = (collisionEvent: CollisionEvent): number => {
-    const { movingBody, collisionBody } = collisionEvent;
+const getCoefficientOfRestitution = (collision: Collision): number => {
+    const { movingBody, collisionBody } = collision;
     return Math.min(movingBody.elasticity, collisionBody.elasticity);
 };
 
-export const getTangentialMovementVector = (collisionEvent: AdjacentCollisionEvent): Vector => {
-    if (isCircleVsCircleCollisionEvent(collisionEvent)) {
-        const { movingBody, collisionBody } = collisionEvent;
+export const getTangentialMovementVector = (collision: AdjacentCollision): Vector => {
+    if (isCircleVsCircleCollision(collision)) {
+        const { movingBody, collisionBody } = collision;
 
         const diffPos = Vector.subtract(collisionBody.pos, movingBody.pos);
         const tangentOfContact = Vector.normal(diffPos);
 
         return Vector.proj(movingBody.velocity, tangentOfContact);
-    } else if (isCircleVsRectCollisionEvent(collisionEvent)) {
-        const { movingBody, pointOfContact } = collisionEvent;
+    } else if (isCircleVsRectCollision(collision)) {
+        const { movingBody, pointOfContact } = collision;
 
         const diffPos = Vector.subtract(pointOfContact, movingBody.pos);
         const tangentOfContact = Vector.normal(diffPos);
 
         return Vector.proj(movingBody.velocity, tangentOfContact);
-    } else if (isRectVsCircleCollisionEvent(collisionEvent)) {
-        const { movingBody, collisionBody, pointOfContact } = collisionEvent;
+    } else if (isRectVsCircleCollision(collision)) {
+        const { movingBody, collisionBody, pointOfContact } = collision;
 
         const diffPos = Vector.subtract(collisionBody.pos, pointOfContact);
         const tangentOfContact = Vector.normal(diffPos);
 
         return Vector.proj(movingBody.velocity, tangentOfContact);
-    } else if (isRectVsRectCollisionEvent(collisionEvent)) {
-        const { movingBody, pointOfContact } = collisionEvent;
+    } else if (isRectVsRectCollision(collision)) {
+        const { movingBody, pointOfContact } = collision;
 
         const diffPos = Vector.subtract(pointOfContact, movingBody.pos);
         const tangentOfContact = Vector.normal(diffPos);

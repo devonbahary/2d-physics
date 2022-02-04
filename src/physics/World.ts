@@ -6,9 +6,9 @@ import {
     getFixedCollisionResolvedVelocity,
     getTangentialMovementVector,
 } from './collisions/collision-resolver.utility';
-import { getCollisionEvent } from './collisions/continuous-collision-detection/continuous-collision-detection';
+import { getClosestCollision } from './collisions/continuous-collision-detection/continuous-collision-detection';
 import { QuadTree, QuadTreeOptions } from './collisions/quad-tree/QuadTree';
-import { CollisionEvent } from './collisions/types';
+import { Collision } from './collisions/types';
 import { Vector } from './Vector';
 
 type WorldOptions = {
@@ -80,27 +80,27 @@ export class World {
 
     private updateBody(body: Body): void {
         const possibleCollisionBodies = this.getBroadPhaseCollisionBodies(body);
-        const collisionEvent = getCollisionEvent(body, possibleCollisionBodies);
+        const collision = getClosestCollision(body, possibleCollisionBodies);
 
-        if (collisionEvent) {
-            const { collisionBody, timeOfCollision } = collisionEvent;
+        if (collision) {
+            const { collisionBody, timeOfCollision } = collision;
 
             // move body to point of collision
             body.progressMovement(timeOfCollision);
 
             // resolve collision and end movement
             if (collisionBody.isFixed) {
-                const resolvedVelocity = getFixedCollisionResolvedVelocity(collisionEvent);
+                const resolvedVelocity = getFixedCollisionResolvedVelocity(collision);
                 body.setVelocity(resolvedVelocity);
             } else {
-                const [resolvedVelocityA, resolvedVelocityB] = getCollisionResolvedVelocities(collisionEvent);
+                const [resolvedVelocityA, resolvedVelocityB] = getCollisionResolvedVelocities(collision);
                 body.setVelocity(resolvedVelocityA);
                 collisionBody.setVelocity(resolvedVelocityB);
 
                 this.resolveChainedBodyCollisions(collisionBody);
             }
 
-            this.onCollisionEvent(collisionEvent);
+            this.onCollision(collision);
         } else {
             body.progressMovement();
             if (!this.options.noFriction) body.applyFriction();
@@ -120,33 +120,33 @@ export class World {
     private resolveChainedBodyCollisions(collisionBody: Body, resolvedBodyIdSet: Set<string> = new Set()): void {
         if (resolvedBodyIdSet.has(collisionBody.id)) return; // possible to revisit the same body; prevent infinite recursion
 
-        const collisionEvent = getCollisionEvent(collisionBody, this.bodies);
+        const collision = getClosestCollision(collisionBody, this.bodies);
 
         // "chained" bodies are the subsequent bodies in exact contact after a collision
-        if (!collisionEvent || collisionEvent.timeOfCollision !== 0) return;
+        if (!collision || collision.timeOfCollision !== 0) return;
 
-        if (collisionEvent.collisionBody.isFixed) {
+        if (collision.collisionBody.isFixed) {
             // if a chain of bodies are halted by the last body in the chain coming into
             // contact with a fixed body, slide that last body against the fixed body
             // by the pressure of the chained bodies
             const tangentialMovementVector = getTangentialMovementVector({
-                ...collisionEvent,
+                ...collision,
                 timeOfCollision: 0,
             });
 
             collisionBody.setVelocity(tangentialMovementVector);
         } else {
             resolvedBodyIdSet.add(collisionBody.id);
-            this.resolveChainedBodyCollisions(collisionEvent.collisionBody, resolvedBodyIdSet);
+            this.resolveChainedBodyCollisions(collision.collisionBody, resolvedBodyIdSet);
         }
 
-        this.onCollisionEvent(collisionEvent);
+        this.onCollision(collision);
     }
 
-    private onCollisionEvent(collisionEvent: CollisionEvent): void {
-        const { movingBody, collisionBody } = collisionEvent;
-        movingBody.collisions.onCollision(collisionEvent);
-        collisionBody.collisions.onCollision(collisionEvent);
+    private onCollision(collision: Collision): void {
+        const { movingBody, collisionBody } = collision;
+        movingBody.collisions.onCollision(collision);
+        collisionBody.collisions.onCollision(collision);
     }
 
     private initBoundaries(): void {

@@ -1,7 +1,7 @@
 import { CircleBody } from 'src/physics/bodies/CircleBody';
 import { RectBody } from 'src/physics/bodies/RectBody';
 import { Vector } from 'src/physics/Vector';
-import { CircleVsRectCollisionEvent } from '../../types';
+import { CircleVsRectCollision } from '../../types';
 import { Axis, TimeOfCollision } from '../types';
 import {
     getRectCorners,
@@ -17,10 +17,10 @@ type CircleVsRectPossibleCollision = {
     axisOfCollision: Axis;
 };
 
-export const getCircleVsRectCollisionEvent = (
+export const getCircleVsRectCollision = (
     movingBody: CircleBody,
     collisionBody: RectBody,
-): CircleVsRectCollisionEvent | null => {
+): CircleVsRectCollision | null => {
     // if a collision occurs with a circle side, then we don't need to check for corners
     return (
         getCircleVsRectSideCollision(movingBody, collisionBody) ||
@@ -28,8 +28,8 @@ export const getCircleVsRectCollisionEvent = (
     );
 };
 
-const getCircleVsRectSideCollision = (circle: CircleBody, rect: RectBody): CircleVsRectCollisionEvent | null => {
-    return getCircleVsRectPossibleSideCollisions(circle, rect).reduce<CircleVsRectCollisionEvent | null>(
+const getCircleVsRectSideCollision = (circle: CircleBody, rect: RectBody): CircleVsRectCollision | null => {
+    return getCircleVsRectPossibleSideCollisions(circle, rect).reduce<CircleVsRectCollision | null>(
         (acc, sideCollision) => {
             const { movingCircleBoundary, collisionRectBoundary, axisOfCollision } = sideCollision;
 
@@ -100,8 +100,8 @@ const willCircleCollideWithRectInOtherAxisAtTimeOfCollision = (
     );
 };
 
-const getCircleVsRectCornerCollision = (circle: CircleBody, rect: RectBody): CircleVsRectCollisionEvent | null => {
-    return getRectCorners(rect).reduce<CircleVsRectCollisionEvent | null>((acc, corner) => {
+const getCircleVsRectCornerCollision = (circle: CircleBody, rect: RectBody): CircleVsRectCollision | null => {
+    return getRectCorners(rect).reduce<CircleVsRectCollision | null>((acc, corner) => {
         const timeOfCollision = getCircleVsRectCornerTimeOfCollision(circle, corner);
 
         if (!shouldConsiderTimeOfCollision(timeOfCollision, acc?.timeOfCollision)) return acc;

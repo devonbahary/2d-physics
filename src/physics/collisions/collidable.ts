@@ -1,21 +1,21 @@
-import { CollisionEvent } from './types';
+import { Collision } from './types';
 
-type OnCollisionCallback = (collisionEvent: CollisionEvent) => void;
+type CollisionEvent = (collision: Collision) => void;
 
 export class Collidable {
-    private onCollisionCallbacks: OnCollisionCallback[] = [];
+    private collisionEvents: CollisionEvent[] = [];
 
-    onCollision(collisionEvent: CollisionEvent): void {
-        for (const onCollisionCallback of this.onCollisionCallbacks) {
-            onCollisionCallback(collisionEvent);
+    onCollision(collision: Collision): void {
+        for (const collisionEvent of this.collisionEvents) {
+            collisionEvent(collision);
         }
     }
 
-    addCollisionCallback(onCollisionCallback: OnCollisionCallback): void {
-        this.onCollisionCallbacks.push(onCollisionCallback);
+    addCollisionEvent(collisionEvent: CollisionEvent): void {
+        this.collisionEvents.push(collisionEvent);
     }
 
-    clearCollisionCallbacks(): void {
-        this.onCollisionCallbacks = [];
+    clearCollisionEvents(): void {
+        this.collisionEvents = [];
     }
 }
